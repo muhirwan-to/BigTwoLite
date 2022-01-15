@@ -15,18 +15,16 @@ public class GS_Gameplay : GameState
 
     private void Awake()
     {
-        ID = Id.GS_Gameplay;
+        Transform ui = Instantiate(UI, GameManager.Instance.Canvas.transform).transform;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
-    {
-        
+    {        
     }
 }

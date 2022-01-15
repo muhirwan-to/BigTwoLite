@@ -15,8 +15,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private List<GameState>     m_gameStateList;
-        
-    public List<Character>      Players;
+
+    [SerializeField]
+    private List<Character>     m_playerList;
+    public List<Character>      PlayerList => m_playerList;
 
     public GameState            CurrentGameState { get; private set; }
 
@@ -47,15 +49,24 @@ public class GameManager : MonoBehaviour
         
     }
 
-    void SetGameState(GameState.Id id)
+    public void SetGameState(int id)
+    {
+        SetGameState((GameState.Id)id);
+    }
+
+    public void SetGameState(GameState.Id id)
     {
         if (CurrentGameState)
         {
+            for (int i = 0; i < m_canvas.transform.childCount; i++)
+            {
+                Destroy(m_canvas.transform.GetChild(i).gameObject);
+            }
+
             Destroy(CurrentGameState.gameObject);
         }
 
         CurrentGameState = m_gameStateList.Find(gs => gs.ID == id);
-
-        Instantiate(CurrentGameState, transform);
+        CurrentGameState = Instantiate(CurrentGameState, transform);
     }
 }
