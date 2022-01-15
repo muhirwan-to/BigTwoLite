@@ -3,15 +3,15 @@ guid: d1fe0bc1ac9782f4c8f875e1a7cea6d7
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 16
+  fontSize: 14
   forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Poppins
   fontNames:
   - Poppins
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f4c99a340a6e6504aa6e992b7a253612, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

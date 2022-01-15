@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     private static GameManager  s_instance = null;
     private GameState           m_gameState;
 
+    public List<Character>      Players;
+
     private void Awake()
     {
         if (s_instance == null)
