@@ -11,11 +11,11 @@ public abstract class GameState : MonoBehaviour
     }
 
     [SerializeField]
-    private GameObject  m_ui;
+    private GameObject  m_UIPrefab;
     [SerializeField]
     private Id          m_id;
 
     public Id           ID => m_id;
-    public GameObject   UI => m_ui;
-
+    public GameObject   UIPrefab => m_UIPrefab;
+    public GameObject   UI { get; protected set; }
 }

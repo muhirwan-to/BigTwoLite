@@ -152,15 +152,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a97f73e512e12d42ac013401f7072f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_canvas: {fileID: 1981976285}
-  m_gameStateList:
+  m_gameStateListPrefab:
   - {fileID: 7986293987997325670, guid: 2f89c55775e53d54cb08d2b06e9e63ac, type: 3}
   - {fileID: -1217532136729657985, guid: 83a37c70f38868c4eac1c70900d9e7c9, type: 3}
-  m_playerList:
+  m_playerListPrefab:
   - {fileID: 2720656454331188389, guid: 1e63b3198b9643946b6e6a243ad68ecc, type: 3}
   - {fileID: 547149717095091281, guid: c8e91226a582dd249adb6e1949877601, type: 3}
   - {fileID: 1789943527279647111, guid: 52ffcc1b69ed0484aa87d7a57b4965a9, type: 3}
   - {fileID: 1441981813301424583, guid: 9b3bc0e92600a4040bca7aed68d0e9b7, type: 3}
+  m_canvas: {fileID: 1981976285}
 --- !u!4 &183326564
 Transform:
   m_ObjectHideFlags: 0

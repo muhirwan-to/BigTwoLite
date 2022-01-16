@@ -10,15 +10,16 @@ public class GameManager : MonoBehaviour
     private static GameManager  s_instance = null;
 
     [SerializeField]
+    private List<GameState>     m_gameStateListPrefab;
+    [SerializeField]
+    private List<Character>     m_playerListPrefab;
+    public List<Character>      PlayerListPrefab => m_playerListPrefab;
+    [HideInInspector]
+    public Character            MCPrefab;
+
+    [SerializeField]
     private GameObject          m_canvas;
     public GameObject           Canvas => m_canvas;
-
-    [SerializeField]
-    private List<GameState>     m_gameStateList;
-
-    [SerializeField]
-    private List<Character>     m_playerList;
-    public List<Character>      PlayerList => m_playerList;
 
     public GameState            CurrentGameState { get; private set; }
 
@@ -37,7 +38,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (m_gameStateList.Any())
+        MCPrefab = null;
+
+        if (m_gameStateListPrefab.Any())
         {
             SetGameState(GameState.Id.GS_CharacterSelection);
         }
@@ -67,17 +70,34 @@ public class GameManager : MonoBehaviour
             Destroy(CurrentGameState.gameObject);
         }
 
-        CurrentGameState = m_gameStateList.Find(gs => gs.ID == _id);
-        CurrentGameState = Instantiate(CurrentGameState, transform);
+        var prefab = m_gameStateListPrefab.Find(gs => gs.ID == _id);
+        if (prefab)
+        {
+            CurrentGameState = Instantiate(prefab, transform);
+        }
+        else
+        {
+            CurrentGameState = null;
+        }
     }
 
     public void SelectCharacter(string _name)
     {
-        Character c = m_playerList.Find(player => player.Name == _name);
+        Character c = null;
+        foreach (var player in PlayerListPrefab)
+        {
+            player.IsMC = false;
+
+            if (player.Name == _name)
+            {
+                c = player;
+            }
+        }
 
         if (c)
         {
-            c.Select();
+            MCPrefab = c;
+            MCPrefab.IsMC = true;
         }
     }
 }

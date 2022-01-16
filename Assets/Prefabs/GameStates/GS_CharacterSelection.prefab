@@ -43,9 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40adbbf2dfb88a342b2124f5f571160a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ui: {fileID: 298292167175470133, guid: af1dbb9d9afabba4cb92d2e5b97ba190, type: 3}
-  m_characterPositions:
-  - {x: -120, y: 0, z: 20}
-  - {x: -40, y: 0, z: 20}
-  - {x: 40, y: 0, z: 20}
-  - {x: 120, y: 0, z: 20}
+  m_UIPrefab: {fileID: 298292167175470133, guid: af1dbb9d9afabba4cb92d2e5b97ba190, type: 3}
+  m_id: 0

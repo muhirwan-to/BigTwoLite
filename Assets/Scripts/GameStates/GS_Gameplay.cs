@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GS_Gameplay : GameState
 {
-    private enum GamePhase
+    public enum GamePhase
     {
         Preparation,
         ShuffleCard,
@@ -13,14 +13,38 @@ public class GS_Gameplay : GameState
         Result
     }
 
+    public GameObject       CharacterContainerPlayer;
+    public List<GameObject> CharacterContainerAI;
+
+    public GamePhase Phase { get; private set; }
+
     private void Awake()
     {
-        Transform ui = Instantiate(UI, GameManager.Instance.Canvas.transform).transform;
+        UI = Instantiate(UIPrefab, GameManager.Instance.Canvas.transform);
+
+        CharacterContainerPlayer = UI.transform.Find("Player").gameObject;
+        CharacterContainerAI.Add(UI.transform.Find("AI-0").gameObject);
+        CharacterContainerAI.Add(UI.transform.Find("AI-1").gameObject);
+        CharacterContainerAI.Add(UI.transform.Find("AI-2").gameObject);
+
+        Phase = GamePhase.Preparation;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        int AIIdx = 0;
+        foreach (var player in GameManager.Instance.PlayerListPrefab)
+        {
+            if (player.IsMC)
+            {
+                Instantiate(player, CharacterContainerPlayer.transform);
+            }
+            else
+            {
+                Instantiate(player, CharacterContainerAI[AIIdx++].transform);
+            }
+        }
     }
 
     // Update is called once per frame

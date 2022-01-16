@@ -10,14 +10,17 @@ public class Character : Selectable
     private string  m_name;
 
     public string   Name => m_name;
-    public bool     IsMC { get; private set; }
+
+    public bool     IsMC { get; set; }
     public bool     IsSelected => currentSelectionState == SelectionState.Selected;
+
+    protected override void Awake()
+    {
+    }
 
     // Start is called before the first frame update
     protected override void Start()
     {
-        IsMC = false;
-
         Transform txtName = gameObject.transform.Find("TxtName");
         if (txtName != null)
         {
