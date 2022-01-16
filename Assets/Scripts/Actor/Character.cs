@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Character : MonoBehaviour
+public class Character : Selectable
 {
     [SerializeField]
-    private string m_name;
+    private string  m_name;
 
     public string   Name => m_name;
-    public bool     IsMC { get; set; }
+    public bool     IsMC { get; private set; }
+    public bool     IsSelected => currentSelectionState == SelectionState.Selected;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
         IsMC = false;
 
@@ -26,6 +28,5 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 }

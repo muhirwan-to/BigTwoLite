@@ -86,7 +86,6 @@ GameObject:
   - component: {fileID: 2720656454331188390}
   - component: {fileID: 2720656454331188391}
   - component: {fileID: 2720656454331188389}
-  - component: {fileID: 5432044227287940994}
   m_Layer: 0
   m_Name: Akbar
   m_TagString: Untagged
@@ -133,19 +132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17abbac65b9c70b43aff0d872db14838, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Akbar
---- !u!114 &5432044227287940994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2720656454331188376}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a98125502f715b4b83cfb77b434e436, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -175,6 +161,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1174096284929042670}
+  m_name: Akbar
 --- !u!1 &3890323752454774125
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,7 +390,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Akbar
 --- !u!1 &8661654243814765267
 GameObject:
   m_ObjectHideFlags: 0
