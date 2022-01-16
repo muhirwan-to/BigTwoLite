@@ -13,8 +13,8 @@ public class GS_Gameplay : GameState
         Result
     }
 
-    public GameObject       CharacterContainerPlayer;
-    public List<GameObject> CharacterContainerAI;
+    public GameObject       CharacterContainerPlayer { get; private set; }
+    public List<GameObject> CharacterContainerAI { get; private set; }
 
     public GamePhase Phase { get; private set; }
 
@@ -23,6 +23,8 @@ public class GS_Gameplay : GameState
         UI = Instantiate(UIPrefab, GameManager.Instance.Canvas.transform);
 
         CharacterContainerPlayer = UI.transform.Find("Player").gameObject;
+
+        CharacterContainerAI = new List<GameObject>();
         CharacterContainerAI.Add(UI.transform.Find("AI-0").gameObject);
         CharacterContainerAI.Add(UI.transform.Find("AI-1").gameObject);
         CharacterContainerAI.Add(UI.transform.Find("AI-2").gameObject);
