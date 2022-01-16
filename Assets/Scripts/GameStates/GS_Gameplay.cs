@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GS_Gameplay : GameState
 {
-    public enum GamePhase
+    public enum EGamePhase
     {
         Preparation,
         ShuffleCard,
@@ -13,39 +13,37 @@ public class GS_Gameplay : GameState
         Result
     }
 
-    public GameObject       CharacterContainerPlayer { get; private set; }
-    public List<GameObject> CharacterContainerAI { get; private set; }
-
-    public GamePhase Phase { get; private set; }
+    public EGamePhase Phase { get; private set; }
 
     private void Awake()
     {
         UI = Instantiate(UIPrefab, GameManager.Instance.Canvas.transform);
-
-        CharacterContainerPlayer = UI.transform.Find("Player").gameObject;
-
-        CharacterContainerAI = new List<GameObject>();
-        CharacterContainerAI.Add(UI.transform.Find("AI-0").gameObject);
-        CharacterContainerAI.Add(UI.transform.Find("AI-1").gameObject);
-        CharacterContainerAI.Add(UI.transform.Find("AI-2").gameObject);
-
-        Phase = GamePhase.Preparation;
+        Phase = EGamePhase.Preparation;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         int AIIdx = 0;
-        foreach (var player in GameManager.Instance.PlayerListPrefab)
+        foreach (var player in GameManager.Instance.CharacterListPrefab)
         {
+            Character playerClone = Instantiate(player, UI.transform);
+            Transform positionRef;
+
             if (player.IsMC)
             {
-                Instantiate(player, CharacterContainerPlayer.transform);
+                positionRef = UI.transform.Find("PositionPlayer");
             }
             else
             {
-                Instantiate(player, CharacterContainerAI[AIIdx++].transform);
+                positionRef = UI.transform.Find("PositionAI_" + AIIdx++);
             }
+
+            playerClone.transform.position = positionRef.position;
+            playerClone.transform.rotation = positionRef.rotation;
+            playerClone.transform.localScale = positionRef.localScale;
+
+            Destroy(positionRef.gameObject);
         }
     }
 

@@ -9,16 +9,18 @@ public class GameManager : MonoBehaviour
  
     private static GameManager  s_instance = null;
 
-    [SerializeField]
-    private List<GameState>     m_gameStateListPrefab;
-    [SerializeField]
-    private List<Character>     m_playerListPrefab;
-    public List<Character>      PlayerListPrefab => m_playerListPrefab;
-    [HideInInspector]
-    public Character            MCPrefab;
 
     [SerializeField]
     private GameObject          m_canvas;
+    [SerializeField]
+    private List<GameState>     m_gameStateListPrefab;
+    [SerializeField]
+    private List<Character>     m_characterListPrefab;
+    [SerializeField]
+    private List<Card>          m_cardList;
+
+    public List<Character>      CharacterListPrefab => m_characterListPrefab;
+    public List<Card>           CardList => m_cardList;
     public GameObject           Canvas => m_canvas;
 
     public GameState            CurrentGameState { get; private set; }
@@ -38,11 +40,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MCPrefab = null;
-
         if (m_gameStateListPrefab.Any())
         {
-            SetGameState(GameState.Id.GS_CharacterSelection);
+            SetGameState(GameState.EId.GS_CharacterSelection);
         }
     }
 
@@ -54,10 +54,10 @@ public class GameManager : MonoBehaviour
 
     public void SetGameState(int _id)
     {
-        SetGameState((GameState.Id)_id);
+        SetGameState((GameState.EId)_id);
     }
 
-    public void SetGameState(GameState.Id _id)
+    public void SetGameState(GameState.EId _id)
     {
         if (CurrentGameState)
         {
@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
                 Destroy(m_canvas.transform.GetChild(i).gameObject);
             }
 
+            // destroy old state object
             Destroy(CurrentGameState.gameObject);
         }
 
@@ -81,23 +82,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SelectCharacter(string _name)
+    public void SelectCharacter(Character _selected)
     {
-        Character c = null;
-        foreach (var player in PlayerListPrefab)
+        foreach (var prefab in CharacterListPrefab)
         {
-            player.IsMC = false;
-
-            if (player.Name == _name)
-            {
-                c = player;
-            }
-        }
-
-        if (c)
-        {
-            MCPrefab = c;
-            MCPrefab.IsMC = true;
+            prefab.IsMC = (prefab.Name == _selected.Name);
         }
     }
 }
