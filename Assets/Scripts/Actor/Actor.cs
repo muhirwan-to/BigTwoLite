@@ -8,6 +8,8 @@ public class Actor : MonoBehaviour
     private Avatar              m_avatar;
     [SerializeField]
     private string              m_name;
+    [SerializeField]
+    private GameObject          m_inHandCardsContainer;
 
     private PlayerController    m_controller;
 
@@ -15,6 +17,8 @@ public class Actor : MonoBehaviour
     public string               Name => m_name;
     public bool                 IsMC { get; private set; }
     public List<Card>           InHandCards { get; private set; }
+
+    private const int           k_inHandCardsCount = 13;
 
     private void Awake()
     {
@@ -54,6 +58,14 @@ public class Actor : MonoBehaviour
 
     public void PutCardsInHand(List<Card> _cards)
     {
-        InHandCards = _cards;
+        for (int i = 0; i < _cards.Count; i++)
+        {
+            _cards[i].transform.localPosition = m_inHandCardsContainer.transform.GetChild(0).localPosition;
+            _cards[i].transform.localRotation = m_inHandCardsContainer.transform.GetChild(0).localRotation;
+            _cards[i].transform.localScale = m_inHandCardsContainer.transform.GetChild(0).localScale;
+
+            DestroyImmediate(m_inHandCardsContainer.transform.GetChild(0).gameObject);
+            Instantiate(_cards[i], m_inHandCardsContainer.transform);
+        }
     }
 }

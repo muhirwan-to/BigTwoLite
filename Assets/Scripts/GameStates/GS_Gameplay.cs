@@ -43,9 +43,11 @@ public class GS_Gameplay : GameState
                 if (player.IsMC)
                 {
                     positionRef = UI.AvatarPositions[0];
+                    player.transform.position = UI.HandCardsPositions[0].position;
                 }
                 else
                 {
+                    player.transform.position = UI.HandCardsPositions[AIIdx].position;
                     positionRef = UI.AvatarPositions[AIIdx++];
                 }
 
@@ -99,6 +101,7 @@ public class GS_Gameplay : GameState
         {
             case EGamePhase.Preparation:
                 {
+                    StopAllCoroutines();
                     StartCoroutine(StartCountdown());
                     break;
                 }
@@ -106,10 +109,16 @@ public class GS_Gameplay : GameState
                 {
                     UI.TextCountdown.gameObject.SetActive(false);
                     m_deck.SetActive(true);
+
+                    StopCoroutine(StartCountdown());
+                    StartCoroutine(DistributeCards());
                     break;
                 }
             case EGamePhase.PlayingCard:
                 {
+                    m_deck.SetActive(false);
+
+                    StopCoroutine(DistributeCards());
                     break;
                 }
             case EGamePhase.CompareCard:
@@ -140,16 +149,36 @@ public class GS_Gameplay : GameState
         SwitchPhase(EGamePhase.ShuffleCard);
     }
 
-    //IEnumerator ShuffleCards()
-    //{
-    //    Card[] deck = { };
-    //    List<Card> shuffledDeck = new List<Card>();
+    IEnumerator DistributeCards()
+    {
+        List<Card> deck = new List<Card>();
+        List<Card> shuffledDeck = new List<Card>();
 
-    //    GameManager.Instance.CardListPrefab.CopyTo(deck);
+        deck.AddRange(GameManager.Instance.CardListPrefab);
 
-    //    while (deck.Length > 0)
-    //    {
-    //        shuffledDeck.Add(deck[Random.Range(0, deck.Length)]);
-    //    }
-    //}
+        while (deck.Count > 0)
+        {
+            int randIdx = Random.Range(0, deck.Count);
+
+            shuffledDeck.Add(deck[randIdx]);
+            deck.RemoveAt(randIdx);
+        }
+
+        int numberOfCardsInHand = shuffledDeck.Count / GameManager.Instance.PlayerList.Count;
+        
+        foreach (var player in GameManager.Instance.PlayerList)
+        {
+            player.PutCardsInHand(shuffledDeck.GetRange(0, numberOfCardsInHand));
+            shuffledDeck.RemoveRange(0, numberOfCardsInHand);
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        SwitchPhase(EGamePhase.PlayingCard);
+    }
+
+    void SpawnCard(Card _card)
+    {
+
+    }
 }
