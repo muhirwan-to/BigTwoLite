@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4191892490039115915}
   - component: {fileID: 7986293987997325670}
   m_Layer: 0
-  m_Name: GS_CharacterSelection
+  m_Name: GS_PlayerSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

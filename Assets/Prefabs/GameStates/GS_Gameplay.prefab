@@ -1815,6 +1815,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UIPrefab: {fileID: 8857186822412219717, guid: 80481e2639ea896448782ed250816908, type: 3}
   m_id: 1
+  m_deck: {fileID: 3818712420524858289}
+  m_countdownSec: 3
 --- !u!1 &8822762400973261702
 GameObject:
   m_ObjectHideFlags: 0
@@ -1986,6 +1988,10 @@ PrefabInstance:
       value: Deck
       objectReference: {fileID: 0}
     - target: {fileID: 8747033562730546056, guid: 1f129762ce955164ab9e33235ddf9236, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8747033562730546056, guid: 1f129762ce955164ab9e33235ddf9236, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -1994,5 +2000,10 @@ PrefabInstance:
 --- !u!4 &190720660481730978 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5708573621294707099, guid: 1f129762ce955164ab9e33235ddf9236, type: 3}
+  m_PrefabInstance: {fileID: 5592764956831963193}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3818712420524858289 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8747033562730546056, guid: 1f129762ce955164ab9e33235ddf9236, type: 3}
   m_PrefabInstance: {fileID: 5592764956831963193}
   m_PrefabAsset: {fileID: 0}

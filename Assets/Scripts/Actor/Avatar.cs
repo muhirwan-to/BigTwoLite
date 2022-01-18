@@ -4,15 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Character : Selectable
+public class Avatar : Button
 {
-    [SerializeField]
-    private string  m_name;
-
-    public string   Name => m_name;
-
-    public bool     IsMC { get; set; }
-    public bool     IsSelected => currentSelectionState == SelectionState.Selected;
+    public Actor Actor { get; set; }
 
     protected override void Awake()
     {
@@ -24,7 +18,7 @@ public class Character : Selectable
         Transform txtName = gameObject.transform.Find("TxtName");
         if (txtName != null)
         {
-            txtName.gameObject.GetComponent<Text>().text = Name;
+            txtName.gameObject.GetComponent<Text>().text = Actor != null ? Actor.Name : "";
         }
     }
 

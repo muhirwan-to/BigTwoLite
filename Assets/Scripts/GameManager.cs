@@ -15,13 +15,13 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<GameState>     m_gameStateListPrefab;
     [SerializeField]
-    private List<Character>     m_characterListPrefab;
+    private List<Card>          m_cardListPrefab;
     [SerializeField]
-    private List<Card>          m_cardList;
+    private List<Actor>         m_playerList;
 
-    public List<Character>      CharacterListPrefab => m_characterListPrefab;
-    public List<Card>           CardList => m_cardList;
     public GameObject           Canvas => m_canvas;
+    public List<Card>           CardListPrefab => m_cardListPrefab;
+    public List<Actor>          PlayerList => m_playerList;
 
     public GameState            CurrentGameState { get; private set; }
 
@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
     {
         if (m_gameStateListPrefab.Any())
         {
-            SetGameState(GameState.EId.GS_CharacterSelection);
+            SetGameState(GameState.EId.GS_PlayerSelection);
         }
     }
 
@@ -50,6 +50,14 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void SelectPlayer(Actor _selected)
+    {
+        foreach (var player in PlayerList)
+        {
+            player.SetRole(player == _selected);
+        }
     }
 
     public void SetGameState(int _id)
@@ -79,14 +87,6 @@ public class GameManager : MonoBehaviour
         else
         {
             CurrentGameState = null;
-        }
-    }
-
-    public void SelectCharacter(Character _selected)
-    {
-        foreach (var prefab in CharacterListPrefab)
-        {
-            prefab.IsMC = (prefab.Name == _selected.Name);
         }
     }
 }

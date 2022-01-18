@@ -6,7 +6,7 @@ public abstract class GameState : MonoBehaviour
 {
     public enum EId
     {
-        GS_CharacterSelection,
+        GS_PlayerSelection,
         GS_Gameplay,
     }
 
@@ -17,5 +17,4 @@ public abstract class GameState : MonoBehaviour
 
     public EId          ID => m_id;
     public GameObject   UIPrefab => m_UIPrefab;
-    public GameObject   UI { get; protected set; }
 }
