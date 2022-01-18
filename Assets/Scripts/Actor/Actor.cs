@@ -67,5 +67,14 @@ public class Actor : MonoBehaviour
             DestroyImmediate(m_inHandCardsContainer.transform.GetChild(0).gameObject);
             Instantiate(_cards[i], m_inHandCardsContainer.transform);
         }
+
+        if (!IsMC)
+        {
+            m_inHandCardsContainer.transform.localRotation = Quaternion.Euler(
+                m_inHandCardsContainer.transform.localRotation.eulerAngles.x
+                , -180
+                , m_inHandCardsContainer.transform.localRotation.eulerAngles.z
+                );
+        }
     }
 }

@@ -151,6 +151,8 @@ public class GS_Gameplay : GameState
 
     IEnumerator DistributeCards()
     {
+        yield return new WaitForSeconds(0.5f);
+
         List<Card> deck = new List<Card>();
         List<Card> shuffledDeck = new List<Card>();
 
