@@ -15,13 +15,13 @@ public class GS_Gameplay : GameState
     }
 
     [SerializeField]
-    private GameObject  m_deck;
+    private GameObject m_deck;
     [SerializeField]
-    private int         m_countdownSec;
+    private int m_countdownSec;
 
-    public EGamePhase   Phase { get; private set; }
+    public EGamePhase Phase { get; private set; }
 
-    private GameplayUI  UI;
+    private GameplayUI UI;
 
     private void Awake()
     {
@@ -35,30 +35,36 @@ public class GS_Gameplay : GameState
         int AIIdx = 1;
         foreach (var player in GameManager.Instance.PlayerList)
         {
-            Avatar avatar = Instantiate(player.Avatar, UI.transform);
+            Transform positionRef;
+
+            if (player.IsMC)
+            {
+                positionRef = UI.AvatarPositions[0];
+                player.transform.position = UI.HandCardsPositions[0].position;
+            }
+            else
+            {
+                positionRef = UI.AvatarPositions[AIIdx];
+                player.transform.position = UI.HandCardsPositions[AIIdx].position;
+
+                AIIdx++;
+            }
+
+            Avatar avatar = Instantiate(player.Avatar, positionRef.parent);
+
             if (avatar)
             {
-                Transform positionRef;
-
-                if (player.IsMC)
-                {
-                    positionRef = UI.AvatarPositions[0];
-                    player.transform.position = UI.HandCardsPositions[0].position;
-                }
-                else
-                {
-                    player.transform.position = UI.HandCardsPositions[AIIdx].position;
-                    positionRef = UI.AvatarPositions[AIIdx++];
-                }
-
                 avatar.Actor = player;
                 avatar.transform.position = positionRef.position;
                 avatar.transform.rotation = positionRef.rotation;
                 avatar.transform.localScale = positionRef.localScale;
 
                 Destroy(positionRef.gameObject);
+                Destroy(player.Avatar.gameObject);
             }
         }
+
+        Destroy(UI.HandCardsPositions[0].parent.gameObject);
 
         SwitchPhase(EGamePhase.Preparation);
     }
@@ -116,13 +122,17 @@ public class GS_Gameplay : GameState
                 }
             case EGamePhase.PlayingCard:
                 {
+                    UI.ActionScreen.SetActive(true);
                     m_deck.SetActive(false);
+
+                    CloneCardsToPlayingArea();
 
                     StopCoroutine(DistributeCards());
                     break;
                 }
             case EGamePhase.CompareCard:
                 {
+                    UI.ActionScreen.SetActive(false);
                     break;
                 }
             case EGamePhase.Result:
@@ -167,7 +177,7 @@ public class GS_Gameplay : GameState
         }
 
         int numberOfCardsInHand = shuffledDeck.Count / GameManager.Instance.PlayerList.Count;
-        
+
         foreach (var player in GameManager.Instance.PlayerList)
         {
             player.PutCardsInHand(shuffledDeck.GetRange(0, numberOfCardsInHand));
@@ -179,8 +189,25 @@ public class GS_Gameplay : GameState
         SwitchPhase(EGamePhase.PlayingCard);
     }
 
-    void SpawnCard(Card _card)
+    void CloneCardsToPlayingArea()
     {
+        Actor player = GameManager.Instance.PlayerList.Find(actor => actor.IsMC);
+        if (player)
+        {
+            for (int i = 0; i < UI.CardAreaList.Count; i++)
+            {
+                GameObject area = UI.CardAreaList[i];
 
+                if (i < player.InHandCards.Count)
+                {
+                    Card card = player.InHandCards[i];
+                    Card clone = Instantiate(card, area.transform);
+
+                    clone.transform.localPosition = new Vector3(0, 0, -1);
+                    clone.transform.localRotation = Quaternion.identity;
+                    clone.transform.localScale = new Vector3(10, 10, 10);
+                }
+            }
+        }
     }
 }

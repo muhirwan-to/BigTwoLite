@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Actor : MonoBehaviour
 {
@@ -58,14 +59,26 @@ public class Actor : MonoBehaviour
 
     public void PutCardsInHand(List<Card> _cards)
     {
+        if (InHandCards != null && InHandCards.Count > 0)
+        {
+            InHandCards.Clear();
+        }
+        else if (InHandCards == null)
+        {
+            InHandCards = new List<Card>(_cards.Count);
+        }
+
         for (int i = 0; i < _cards.Count; i++)
         {
-            _cards[i].transform.localPosition = m_inHandCardsContainer.transform.GetChild(0).localPosition;
-            _cards[i].transform.localRotation = m_inHandCardsContainer.transform.GetChild(0).localRotation;
-            _cards[i].transform.localScale = m_inHandCardsContainer.transform.GetChild(0).localScale;
+            Card card = Instantiate(_cards[i], m_inHandCardsContainer.transform);
+            card.transform.localPosition = m_inHandCardsContainer.transform.GetChild(0).localPosition;
+            card.transform.localRotation = m_inHandCardsContainer.transform.GetChild(0).localRotation;
+            card.transform.localScale = m_inHandCardsContainer.transform.GetChild(0).localScale;
 
             DestroyImmediate(m_inHandCardsContainer.transform.GetChild(0).gameObject);
-            Instantiate(_cards[i], m_inHandCardsContainer.transform);
+            print("add listener to card: " + card);
+
+            InHandCards.Add(card);
         }
 
         if (!IsMC)
@@ -76,5 +89,20 @@ public class Actor : MonoBehaviour
                 , m_inHandCardsContainer.transform.localRotation.eulerAngles.z
                 );
         }
+    }
+
+    void SwapCards(Card _first, Card _second)
+    {
+        Transform temp = _first.transform;
+
+        print("swap cards: " + _first + " with: " + _second);
+
+        _first.transform.position = _second.transform.position;
+        _first.transform.rotation = _second.transform.rotation;
+        _first.transform.localScale = _second.transform.localScale;
+
+        _second.transform.position = temp.transform.position;
+        _second.transform.rotation = temp.transform.rotation;
+        _second.transform.localScale = temp.transform.localScale;
     }
 }
