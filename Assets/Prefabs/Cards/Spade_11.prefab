@@ -13,7 +13,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 6908661693f4ad8488e792efbab02925, type: 2}
     - target: {fileID: 4401144030270959824, guid: 773de013198e7584e951074c4a4d798b, type: 3}
       propertyPath: m_Name
-      value: Spade_11 Variant
+      value: Spade_11
       objectReference: {fileID: 0}
     - target: {fileID: 6101013293842664181, guid: 773de013198e7584e951074c4a4d798b, type: 3}
       propertyPath: m_type
@@ -53,11 +53,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7519381689875937929, guid: 773de013198e7584e951074c4a4d798b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 60
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7519381689875937929, guid: 773de013198e7584e951074c4a4d798b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 95
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7519381689875937929, guid: 773de013198e7584e951074c4a4d798b, type: 3}
       propertyPath: m_LocalPosition.x

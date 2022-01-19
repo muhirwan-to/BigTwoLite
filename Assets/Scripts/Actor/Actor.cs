@@ -110,16 +110,11 @@ public class Actor : MonoBehaviour
 
     public void SwapCards(Card _first, Card _second)
     {
-        Transform temp = _first.transform;
+        GameObject firstParent = _first.transform.parent.gameObject;
 
         print("swap cards: " + _first + " with: " + _second);
 
-        _first.transform.position = _second.transform.position;
-        _first.transform.rotation = _second.transform.rotation;
-        _first.transform.localScale = _second.transform.localScale;
-
-        _second.transform.position = temp.transform.position;
-        _second.transform.rotation = temp.transform.rotation;
-        _second.transform.localScale = temp.transform.localScale;
+        _first.transform.SetParent(_second.transform.parent, false);
+        _second.transform.SetParent(firstParent.transform, false);
     }
 }
