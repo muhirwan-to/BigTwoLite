@@ -13,17 +13,17 @@ public class Actor : MonoBehaviour
     private GameObject          m_inHandCardsContainer;
 
     private PlayerController    m_controller;
+    private Card                m_selectedCard;
 
     public Avatar               Avatar => m_avatar;
     public string               Name => m_name;
     public bool                 IsMC { get; private set; }
     public List<Card>           InHandCards { get; private set; }
 
-    private const int           k_inHandCardsCount = 13;
-
     private void Awake()
     {
         m_avatar.Actor = this;
+        m_selectedCard = null;
     }
 
     // Start is called before the first frame update
@@ -76,7 +76,6 @@ public class Actor : MonoBehaviour
             card.transform.localScale = m_inHandCardsContainer.transform.GetChild(0).localScale;
 
             DestroyImmediate(m_inHandCardsContainer.transform.GetChild(0).gameObject);
-            print("add listener to card: " + card);
 
             InHandCards.Add(card);
         }
@@ -91,7 +90,25 @@ public class Actor : MonoBehaviour
         }
     }
 
-    void SwapCards(Card _first, Card _second)
+    public void SelectCard(Card _card)
+    {
+        print("click select cards: " + _card + " with: " + this);
+        if (!m_selectedCard)
+        {
+            m_selectedCard = _card;
+        }
+        else
+        {
+            if (m_selectedCard != _card)
+            {
+                SwapCards(m_selectedCard, _card);
+            }
+            
+            m_selectedCard = null;
+        }
+    }
+
+    public void SwapCards(Card _first, Card _second)
     {
         Transform temp = _first.transform;
 

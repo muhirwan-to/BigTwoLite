@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GS_Gameplay : GameState
 {
@@ -15,18 +16,20 @@ public class GS_Gameplay : GameState
     }
 
     [SerializeField]
-    private GameObject m_deck;
+    private GameObject  m_deck;
     [SerializeField]
-    private int m_countdownSec;
+    private int         m_countdownSec;
 
-    public EGamePhase Phase { get; private set; }
+    public EGamePhase   Phase { get; private set; }
 
-    private GameplayUI UI;
+    private GameplayUI  UI;
+    private Actor       m_mc;
 
     private void Awake()
     {
         UI = Instantiate(UIPrefab.GetComponent<GameplayUI>(), GameManager.Instance.Canvas.transform);
         Phase = EGamePhase.Idle;
+        m_mc = null;
     }
 
     // Start is called before the first frame update
@@ -41,6 +44,8 @@ public class GS_Gameplay : GameState
             {
                 positionRef = UI.AvatarPositions[0];
                 player.transform.position = UI.HandCardsPositions[0].position;
+
+                m_mc = player;
             }
             else
             {
@@ -191,21 +196,24 @@ public class GS_Gameplay : GameState
 
     void CloneCardsToPlayingArea()
     {
-        Actor player = GameManager.Instance.PlayerList.Find(actor => actor.IsMC);
-        if (player)
+        if (m_mc)
         {
             for (int i = 0; i < UI.CardAreaList.Count; i++)
             {
                 GameObject area = UI.CardAreaList[i];
 
-                if (i < player.InHandCards.Count)
+                if (i < m_mc.InHandCards.Count)
                 {
-                    Card card = player.InHandCards[i];
+                    Card card = m_mc.InHandCards[i];
                     Card clone = Instantiate(card, area.transform);
 
                     clone.transform.localPosition = new Vector3(0, 0, -1);
                     clone.transform.localRotation = Quaternion.identity;
                     clone.transform.localScale = new Vector3(10, 10, 10);
+
+                    clone.GetComponent<Button>().onClick.AddListener(delegate { m_mc.SelectCard(clone); });
+
+                    print("add click on card: " + clone + " into: " + m_mc);
                 }
             }
         }
