@@ -92,7 +92,6 @@ public class Actor : MonoBehaviour
 
     public void SelectCard(Card _card)
     {
-        print("click select cards: " + _card + " with: " + this);
         if (!m_selectedCard)
         {
             m_selectedCard = _card;
@@ -108,13 +107,18 @@ public class Actor : MonoBehaviour
         }
     }
 
+    public void DeSelectCard()
+    {
+        m_selectedCard = null;
+    }
+
     public void SwapCards(Card _first, Card _second)
     {
         GameObject firstParent = _first.transform.parent.gameObject;
 
-        print("swap cards: " + _first + " with: " + _second);
-
         _first.transform.SetParent(_second.transform.parent, false);
         _second.transform.SetParent(firstParent.transform, false);
+
+        print("swap cards: " + _first + " with: " + _second);
     }
 }

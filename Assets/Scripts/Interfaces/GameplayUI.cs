@@ -20,13 +20,13 @@ public class GameplayUI : MonoBehaviour
     [SerializeField]
     private List<GameObject>    m_cardAreaList;
 
-    public Button           ButtonHelp => m_helpButton;
-    public List<Transform>  AvatarPositions => m_avatarPositions;
-    public List<Transform>  HandCardsPositions => m_handCardsPositions;
-    public Text             TextCountdown => m_countdownText;
-    public GameObject       ActionScreen => m_actionScreen;
-    public List<GameObject> DropAreaList => m_dropAreaList;
-    public List<GameObject> CardAreaList => m_cardAreaList;
+    public Button               ButtonHelp => m_helpButton;
+    public List<Transform>      AvatarPositions => m_avatarPositions;
+    public List<Transform>      HandCardsPositions => m_handCardsPositions;
+    public Text                 TextCountdown => m_countdownText;
+    public GameObject           ActionScreen => m_actionScreen;
+    public List<GameObject>     DropAreaList => m_dropAreaList;
+    public List<GameObject>     CardAreaList => m_cardAreaList;
 
     // Start is called before the first frame update
     void Start()

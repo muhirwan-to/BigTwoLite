@@ -32,12 +32,24 @@ public class Card : MonoBehaviour
     }
 
     [SerializeField]
-    private EType   m_type;
+    private EType       m_type;
     [SerializeField]
-    private EValue  m_value;
+    private EValue      m_value;
 
-    public EType    Type => m_type;
-    public EValue   Value => m_value;
+    private bool        m_playable;
+
+    public EType        Type => m_type;
+    public EValue       Value => m_value;
+    public bool         Playable => m_playable;
+
+    [HideInInspector]
+    public Actor        Actor;
+
+    private void Awake()
+    {
+        m_playable = false;
+        Actor = null;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +60,26 @@ public class Card : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Actor && GetComponent<DragAndDrop>().IsDragging)
+        {
+            print("card is dragging, deselect card: " + name + " in: " + Actor.name)
+            Actor.DeSelectCard();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("DropArea"))
+        {
+            if (m_playable && collision.transform.childCount == 0)
+            {
+                GetComponent<DragAndDrop>().SetObjectHover(collision.gameObject);
+            }
+        }
+    }
+
+    public void SetPlayable()
+    {
+        m_playable = true;
     }
 }

@@ -47,7 +47,7 @@ MonoBehaviour:
   m_UIPrefab: {fileID: 8857186822412219717, guid: 80481e2639ea896448782ed250816908, type: 3}
   m_id: 1
   m_deck: {fileID: 3818712420524858289}
-  m_countdownSec: 0
+  m_countdownSec: 3
 --- !u!1001 &5592764956831963193
 PrefabInstance:
   m_ObjectHideFlags: 0

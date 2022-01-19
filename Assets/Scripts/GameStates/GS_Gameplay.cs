@@ -211,9 +211,10 @@ public class GS_Gameplay : GameState
                     clone.transform.localRotation = Quaternion.identity;
                     clone.transform.localScale = new Vector3(10, 10, 10);
 
+                    clone.Actor = m_mc;
+                    clone.SetPlayable();
+                    clone.GetComponent<DragAndDrop>().SetDragDropActive(true);
                     clone.GetComponent<Button>().onClick.AddListener(delegate { m_mc.SelectCard(clone); });
-
-                    print("add click on card: " + clone + " into: " + m_mc);
                 }
             }
         }
