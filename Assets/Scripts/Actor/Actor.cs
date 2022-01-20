@@ -35,7 +35,7 @@ public class Actor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void SetRole(bool _isMC)
@@ -92,18 +92,21 @@ public class Actor : MonoBehaviour
 
     public void SelectCard(Card _card)
     {
-        if (!m_selectedCard)
+        if (!_card.GetComponent<DragAndDrop>().IsDragging)
         {
-            m_selectedCard = _card;
-        }
-        else
-        {
-            if (m_selectedCard != _card)
+            if (!m_selectedCard)
             {
-                SwapCards(m_selectedCard, _card);
+                m_selectedCard = _card;
             }
+            else
+            {
+                if (m_selectedCard != _card)
+                {
+                    SwapCards(m_selectedCard, _card);
+                }
             
-            m_selectedCard = null;
+                m_selectedCard = null;
+            }
         }
     }
 
@@ -118,6 +121,8 @@ public class Actor : MonoBehaviour
 
         _first.transform.SetParent(_second.transform.parent, false);
         _second.transform.SetParent(firstParent.transform, false);
+
+
 
         print("swap cards: " + _first + " with: " + _second);
     }

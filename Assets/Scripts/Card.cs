@@ -60,11 +60,7 @@ public class Card : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Actor && GetComponent<DragAndDrop>().IsDragging)
-        {
-            print("card is dragging, deselect card: " + name + " in: " + Actor.name)
-            Actor.DeSelectCard();
-        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

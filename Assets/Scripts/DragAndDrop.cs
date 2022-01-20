@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class DragAndDrop : MonoBehaviour
+public class DragAndDrop : MonoBehaviour, IInitializePotentialDragHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField]
     private GameObject  m_object;
@@ -42,45 +43,13 @@ public class DragAndDrop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-    }
-
-    private void OnMouseDown()
-    {
-        m_mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        m_startDrag = true;
-    }
-
-    private void OnMouseDrag()
-    {
         if (m_isActive && m_startDrag)
         {
-            print("drag m_dragTimeStartMs: " + m_dragTimeStartSec + " with interval: " + m_dragIntervalSec);
             if (m_dragTimeStartSec < m_dragIntervalSec)
             {
                 m_dragTimeStartSec += Time.deltaTime;
             }
-            else
-            {
-                Vector3 movement = Camera.main.ScreenToWorldPoint(Input.mousePosition) - m_mouseStartPosition;
-
-                m_object.transform.position = new Vector3(movement.x + m_objectWorldOriginalPosition.x, movement.y + m_objectWorldOriginalPosition.y, m_objectWorldOriginalPosition.z);
-                m_isDragging = true;
-            }
         }
-    }
-
-    private void OnMouseUp()
-    {
-        if (m_lastObjectHover)
-        {
-            m_object.transform.SetParent(m_lastObjectHover.transform);
-        }
-
-        ResetLocalPosition();
-        UpdateWorldPosition();
-
-        Cancel();
     }
 
     public void SetDragDropActive(bool _active)
@@ -108,5 +77,59 @@ public class DragAndDrop : MonoBehaviour
     public void UpdateWorldPosition()
     {
         m_objectWorldOriginalPosition = m_object.transform.position;
+    }
+
+    public void OnInitializePotentialDrag(PointerEventData eventData)
+    {
+        if (m_isActive)
+        {
+            m_mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            m_startDrag = true;
+
+            ResetLocalPosition();
+            UpdateWorldPosition();
+        }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (m_isActive)
+        {
+            if (m_dragTimeStartSec < m_dragIntervalSec)
+            {
+                Cancel();
+            }
+            else
+            {
+                m_object.GetComponent<Card>().Actor?.DeSelectCard();
+            }
+        }
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (m_isActive && m_startDrag)
+        {
+            Vector3 movement = Camera.main.ScreenToWorldPoint(Input.mousePosition) - m_mouseStartPosition;
+
+            m_object.transform.position = new Vector3(movement.x + m_objectWorldOriginalPosition.x, movement.y + m_objectWorldOriginalPosition.y, m_objectWorldOriginalPosition.z);
+            m_isDragging = true;
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (m_isActive && m_startDrag)
+        {
+            if (m_lastObjectHover)
+            {
+                m_object.transform.SetParent(m_lastObjectHover.transform);
+            }
+
+            ResetLocalPosition();
+            UpdateWorldPosition();
+
+            Cancel();
+        }
     }
 }
