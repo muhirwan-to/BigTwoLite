@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public List<Actor>          PlayerList => m_playerList;
 
     public GameState            CurrentGameState { get; private set; }
+    public SequenceChecker      SequenceChecker => GetComponent<SequenceChecker>();
 
     private void Awake()
     {

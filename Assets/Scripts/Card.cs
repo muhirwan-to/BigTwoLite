@@ -40,6 +40,7 @@ public class Card : MonoBehaviour
 
     public EType        Type => m_type;
     public EValue       Value => m_value;
+    public int          ValueInt => (int)m_value;
     public bool         Playable => m_playable;
 
     [HideInInspector]

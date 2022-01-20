@@ -16,17 +16,32 @@ public class GameplayUI : MonoBehaviour
     [SerializeField]
     private GameObject          m_actionScreen;
     [SerializeField]
-    private List<GameObject>    m_dropAreaList;
+    private GameObject          m_lowDropArea;
     [SerializeField]
-    private List<GameObject>    m_cardAreaList;
+    private GameObject          m_midDropArea;
+    [SerializeField]
+    private GameObject          m_highDropArea;
+    [SerializeField]
+    private GameObject          m_playedCards;
+    [SerializeField]
+    private Text                m_lowHint;
+    [SerializeField]
+    private Text                m_midHint;
+    [SerializeField]
+    private Text                m_highHint;
 
     public Button               ButtonHelp => m_helpButton;
     public List<Transform>      AvatarPositions => m_avatarPositions;
     public List<Transform>      HandCardsPositions => m_handCardsPositions;
     public Text                 TextCountdown => m_countdownText;
     public GameObject           ActionScreen => m_actionScreen;
-    public List<GameObject>     DropAreaList => m_dropAreaList;
-    public List<GameObject>     CardAreaList => m_cardAreaList;
+    public GameObject           LowDropAreaList => m_lowDropArea;
+    public GameObject           MidDropAreaList => m_midDropArea;
+    public GameObject           HighDropAreaList => m_highDropArea;
+    public GameObject           PlayedCards => m_playedCards;
+    public Text                 LowHint => m_lowHint;
+    public Text                 MidHint => m_midHint;
+    public Text                 HighHint => m_highHint;
 
     // Start is called before the first frame update
     void Start()

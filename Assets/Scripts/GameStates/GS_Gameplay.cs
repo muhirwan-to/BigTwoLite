@@ -89,6 +89,52 @@ public class GS_Gameplay : GameState
                 }
             case EGamePhase.PlayingCard:
                 {
+                    List<Card> lowCardList = new List<Card>();
+                    List<Card> midCardList = new List<Card>();
+                    List<Card> highCardList = new List<Card>();
+
+                    for (int i = 0; i < UI.LowDropAreaList.transform.childCount; i++)
+                    {
+                        Transform drop = UI.LowDropAreaList.transform.GetChild(i);
+                        if (drop.childCount > 0)
+                        {
+                            lowCardList.Add(drop.GetChild(0).gameObject.GetComponent<Card>());
+                        }
+                    }
+
+                    for (int i = 0; i < UI.MidDropAreaList.transform.childCount; i++)
+                    {
+                        Transform drop = UI.MidDropAreaList.transform.GetChild(i);
+                        if (drop.childCount > 0)
+                        {
+                            midCardList.Add(drop.GetChild(0).gameObject.GetComponent<Card>());
+                        }
+                    }
+
+                    for (int i = 0; i < UI.HighDropAreaList.transform.childCount; i++)
+                    {
+                        Transform drop = UI.HighDropAreaList.transform.GetChild(i);
+                        if (drop.childCount > 0)
+                        {
+                            highCardList.Add(drop.GetChild(0).gameObject.GetComponent<Card>());
+                        }
+                    }
+
+                    if (lowCardList.Count == 5)
+                    {
+                        UI.LowHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(lowCardList)];
+                    }
+                    
+                    if (midCardList.Count == 5)
+                    {
+                        UI.MidHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(midCardList)];
+                    }
+                    
+                    if (highCardList.Count == 3)
+                    {
+                        UI.HighHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(highCardList)];
+                    }
+
                     break;
                 }
             case EGamePhase.CompareCard:
@@ -149,6 +195,8 @@ public class GS_Gameplay : GameState
                     break;
                 }
         }
+
+        Phase = _newPhase;
     }
 
     IEnumerator StartCountdown()
@@ -198,9 +246,9 @@ public class GS_Gameplay : GameState
     {
         if (m_mc)
         {
-            for (int i = 0; i < UI.CardAreaList.Count; i++)
+            for (int i = 0; i < UI.PlayedCards.transform.childCount; i++)
             {
-                GameObject area = UI.CardAreaList[i];
+                GameObject area = UI.PlayedCards.transform.GetChild(i).gameObject;
 
                 if (i < m_mc.InHandCards.Count)
                 {
