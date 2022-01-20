@@ -44,6 +44,8 @@ public class Card : MonoBehaviour
 
     [HideInInspector]
     public Actor        Actor;
+    [HideInInspector]
+    public Card         LinkedCard;
 
     private void Awake()
     {

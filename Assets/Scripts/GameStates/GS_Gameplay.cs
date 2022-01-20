@@ -207,11 +207,15 @@ public class GS_Gameplay : GameState
                     Card card = m_mc.InHandCards[i];
                     Card clone = Instantiate(card, area.transform);
 
+                    card.LinkedCard = clone;
+
                     clone.transform.localPosition = new Vector3(0, 0, -1);
                     clone.transform.localRotation = Quaternion.identity;
                     clone.transform.localScale = new Vector3(10, 10, 10);
 
+                    clone.LinkedCard = card;
                     clone.Actor = m_mc;
+
                     clone.SetPlayable();
                     clone.GetComponent<DragAndDrop>().SetDragDropActive(true);
                     clone.GetComponent<Button>().onClick.AddListener(delegate { m_mc.SelectCard(clone); });

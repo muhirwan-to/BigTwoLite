@@ -78,6 +78,11 @@ public class Actor : MonoBehaviour
             DestroyImmediate(m_inHandCardsContainer.transform.GetChild(0).gameObject);
 
             InHandCards.Add(card);
+
+            if (IsMC)
+            {
+                print("MC's in hands card-" + i + ": " + InHandCards[i].name + ", parent name: " + InHandCards[i].transform.parent.gameObject.name);
+            }
         }
 
         if (!IsMC)
@@ -115,15 +120,38 @@ public class Actor : MonoBehaviour
         m_selectedCard = null;
     }
 
-    public void SwapCards(Card _first, Card _second)
+    public void SwapCards(Card _first, Card _second, bool _ignoreLink = false)
     {
-        GameObject firstParent = _first.transform.parent.gameObject;
+        if (_first.transform.parent != _second.transform.parent)
+        {
+            GameObject firstParent = _first.transform.parent.gameObject;
 
-        _first.transform.SetParent(_second.transform.parent, false);
-        _second.transform.SetParent(firstParent.transform, false);
+            _first.transform.SetParent(_second.transform.parent, false);
+            _second.transform.SetParent(firstParent.transform, false);
+        }
+        else
+        {
+            Vector3 tmp_pos = new Vector3(_first.transform.localPosition.x, _first.transform.localPosition.y, _first.transform.localPosition.z);
+            Quaternion tmp_rot = new Quaternion(_first.transform.localRotation.x, _first.transform.localRotation.y, _first.transform.localRotation.z, _first.transform.localRotation.w);
+            Vector3 tmp_sca = new Vector3(_first.transform.localScale.x, _first.transform.localScale.y, _first.transform.localScale.z);
 
+            _first.transform.localPosition = _second.transform.localPosition;
+            _first.transform.localRotation = _second.transform.localRotation;
+            _first.transform.localScale = _second.transform.localScale;
 
+            _second.transform.localPosition = tmp_pos;
+            _second.transform.localRotation = tmp_rot;
+            _second.transform.localScale = tmp_sca;
+        }
 
-        print("swap cards: " + _first + " with: " + _second);
+        if (!_ignoreLink)
+        {
+            if (_first.LinkedCard && _second.LinkedCard)
+            {
+                SwapCards(_first.LinkedCard, _second.LinkedCard, true);
+            }
+        }
+
+        print("swap cards: " + _first + " with: " + _second + ", parent name: " + _first.transform.parent.gameObject.name);
     }
 }
