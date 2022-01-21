@@ -208,6 +208,15 @@ public class GS_Gameplay : GameState
             case EGamePhase.CompareCard:
                 {
                     UI.ActionScreen.SetActive(false);
+
+                    _newPhase = EGamePhase.Result;
+
+                    SwitchPhase(_newPhase);
+
+                    break;
+                }
+            case EGamePhase.Result:
+                {
                     UI.TextGameOver.gameObject.SetActive(true);
 
                     int winner = Random.Range(0, (int)Time.timeAsDouble) % GameManager.Instance.PlayerList.Count;
@@ -227,10 +236,6 @@ public class GS_Gameplay : GameState
                         }
                     }
 
-                    break;
-                }
-            case EGamePhase.Result:
-                {
                     break;
                 }
             default:

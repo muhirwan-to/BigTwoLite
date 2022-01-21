@@ -2,8 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EAIDifficulty
+{
+    Easy,
+    Medium,
+    Hard
+}
+
 public class AIController : PlayerController
 {
+    [SerializeField]
+    private EAIDifficulty m_difficulty;
+
     void Awake()
     {
         
@@ -18,6 +28,32 @@ public class AIController : PlayerController
     // Update is called once per frame
     void Update()
     {
-        
+        if (GameManager.Instance.CurrentGameState.ID == GameState.EId.GS_Gameplay)
+        {
+            GS_Gameplay gs = GameManager.Instance.CurrentGameState as GS_Gameplay;
+
+            if (gs.Phase == GS_Gameplay.EGamePhase.PlayingCard)
+            {
+                switch (m_difficulty)
+                {
+                    case EAIDifficulty.Easy:
+                        {
+                            break;
+                        }
+                    case EAIDifficulty.Medium:
+                        {
+                            break;
+                        }
+                    case EAIDifficulty.Hard:
+                        {
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }
+        }
     }
 }
