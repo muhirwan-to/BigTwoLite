@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class Actor : MonoBehaviour
 {
+    public enum EState
+    {
+        Idle,
+        Win,
+        Lose
+    }
+
     [SerializeField]
     private Avatar              m_avatar;
     [SerializeField]
@@ -14,16 +21,31 @@ public class Actor : MonoBehaviour
 
     private PlayerController    m_controller;
     private Card                m_selectedCard;
+    private EState              m_state;
 
     public Avatar               Avatar => m_avatar;
     public string               Name => m_name;
     public bool                 IsMC { get; private set; }
     public List<Card>           InHandCards { get; private set; }
 
+    [HideInInspector]
+    public SequenceChecker.ESequence    LowSequence;
+    [HideInInspector]
+    public SequenceChecker.ESequence    MidSequence;
+    [HideInInspector]
+    public SequenceChecker.ESequence    HighSequence;
+    [HideInInspector]
+    public Card.EValue                  LowHigher;
+    [HideInInspector]
+    public Card.EValue                  MidHigher;
+    [HideInInspector]
+    public Card.EValue                  HighHigher;
+
     private void Awake()
     {
         m_avatar.Actor = this;
         m_selectedCard = null;
+        m_state = EState.Idle;
     }
 
     // Start is called before the first frame update
@@ -35,7 +57,12 @@ public class Actor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Avatar?.SetState(m_state);
+    }
 
+    public void SetAvatar(Avatar _avatar)
+    {
+        m_avatar = _avatar;
     }
 
     public void SetRole(bool _isMC)
@@ -146,5 +173,10 @@ public class Actor : MonoBehaviour
                 SwapCards(_first.LinkedCard, _second.LinkedCard, true);
             }
         }
+    }
+
+    public void SetState(EState _state)
+    {
+        m_state = _state;
     }
 }

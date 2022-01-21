@@ -30,6 +30,8 @@ public class GS_Gameplay : GameState
     private void Awake()
     {
         UI = Instantiate(UIPrefab.GetComponent<GameplayUI>(), GameManager.Instance.Canvas.transform);
+        UI.ButtonCheat_Compare.onClick.AddListener(Cheat_Compare);
+
         Phase = EGamePhase.Idle;
         m_mc = null;
     }
@@ -68,6 +70,8 @@ public class GS_Gameplay : GameState
 
                 Destroy(positionRef.gameObject);
                 Destroy(player.Avatar.gameObject);
+
+                player.SetAvatar(avatar);
             }
         }
 
@@ -204,8 +208,24 @@ public class GS_Gameplay : GameState
             case EGamePhase.CompareCard:
                 {
                     UI.ActionScreen.SetActive(false);
+                    UI.TextGameOver.gameObject.SetActive(true);
 
+                    int winner = Random.Range(0, (int)Time.timeAsDouble) % GameManager.Instance.PlayerList.Count;
 
+                    for (int i = 0; i < GameManager.Instance.PlayerList.Count; i++)
+                    {
+                        Actor player = GameManager.Instance.PlayerList[i];
+                        if (i == winner)
+                        {
+                            player.SetState(Actor.EState.Win);
+
+                            UI.TextGameOver.text = player.Name + " Win!";
+                        }
+                        else
+                        {
+                            player.SetState(Actor.EState.Lose);
+                        }
+                    }
 
                     break;
                 }
@@ -307,6 +327,15 @@ public class GS_Gameplay : GameState
                     clone.GetComponent<Button>().onClick.AddListener(delegate { m_mc.SelectCard(clone); });
                 }
             }
+        }
+    }
+
+    void Cheat_Compare()
+    {
+        if (Phase == EGamePhase.PlayingCard)
+        {
+            StopCoroutine(StartPlayingTimer());
+            SwitchPhase(EGamePhase.CompareCard);
         }
     }
 }

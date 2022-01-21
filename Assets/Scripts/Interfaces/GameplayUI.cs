@@ -40,6 +40,10 @@ public class GameplayUI : MonoBehaviour
     private Text                m_midHint;
     [SerializeField]
     private Text                m_highHint;
+    [SerializeField]
+    private Button              m_cheatCompareButton;
+    [SerializeField]
+    private Text                m_gameOverText;
 
     public Button               ButtonHelp => m_helpButton;
     public List<Transform>      AvatarPositions => m_avatarPositions;
@@ -54,6 +58,8 @@ public class GameplayUI : MonoBehaviour
     public Text                 LowHint => m_lowHint;
     public Text                 MidHint => m_midHint;
     public Text                 HighHint => m_highHint;
+    public Button               ButtonCheat_Compare => m_cheatCompareButton;
+    public Text                 TextGameOver => m_gameOverText;
 
     private ESortType           m_currentSort;
 

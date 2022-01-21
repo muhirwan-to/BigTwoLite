@@ -42,7 +42,7 @@ public class GS_PlayerSelection : GameState
             {
                 avatar.Actor = players[i];
                 avatar.transform.localPosition = new Vector3((leftX + (gapX * i)), avatarList.transform.position.y, avatarList.transform.position.z);
-                avatar.onClick.AddListener( delegate { SelectAvatar(avatar); });
+                avatar.GetComponent<Button>().onClick.AddListener( delegate { SelectAvatar(avatar); });
             }
         }
     }

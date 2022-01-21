@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1681273584916617279}
   - component: {fileID: 4312855120606764468}
+  - component: {fileID: 2476319669051772580}
+  - component: {fileID: 4854325068349333864}
   m_Layer: 0
   m_Name: Avatar
   m_TagString: Untagged
@@ -48,6 +50,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17abbac65b9c70b43aff0d872db14838, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_faceIdle: {fileID: 21300000, guid: baabcfee76d4f422fa2d9ab783ee38b0, type: 3}
+  m_faceWin: {fileID: 21300000, guid: 81ed306d4da7b40a79b119636e9a8a0f, type: 3}
+  m_faceLose: {fileID: 21300000, guid: 1d6111901163e40b49a08c33c0182baf, type: 3}
+  m_currentFace: {fileID: 9122888583179956709}
+--- !u!114 &2476319669051772580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733791625681501479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -80,6 +98,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!222 &4854325068349333864
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733791625681501479}
+  m_CullTransparentMesh: 1
 --- !u!1 &1053784781064030738
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,6 +154,12 @@ MonoBehaviour:
   m_avatar: {fileID: 4312855120606764468}
   m_name: 
   m_inHandCardsContainer: {fileID: 2921626654476276375}
+  LowSequence: 0
+  MidSequence: 0
+  HighSequence: 0
+  LowHigher: 0
+  MidHigher: 0
+  HighHigher: 0
 --- !u!1 &1260232815420923048
 GameObject:
   m_ObjectHideFlags: 0
