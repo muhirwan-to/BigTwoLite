@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
-    public enum EType
+    public enum EFlag
     {
         Diamond,
         Club,
@@ -32,13 +32,13 @@ public class Card : MonoBehaviour
     }
 
     [SerializeField]
-    private EType       m_type;
+    private EFlag       m_flag;
     [SerializeField]
     private EValue      m_value;
 
     private bool        m_playable;
 
-    public EType        Type => m_type;
+    public EFlag        Flag => m_flag;
     public EValue       Value => m_value;
     public int          ValueInt => (int)m_value;
     public bool         Playable => m_playable;

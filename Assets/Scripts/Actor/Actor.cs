@@ -78,11 +78,6 @@ public class Actor : MonoBehaviour
             DestroyImmediate(m_inHandCardsContainer.transform.GetChild(0).gameObject);
 
             InHandCards.Add(card);
-
-            if (IsMC)
-            {
-                print("MC's in hands card-" + i + ": " + InHandCards[i].name + ", parent name: " + InHandCards[i].transform.parent.gameObject.name);
-            }
         }
 
         if (!IsMC)
@@ -120,7 +115,7 @@ public class Actor : MonoBehaviour
         m_selectedCard = null;
     }
 
-    public void SwapCards(Card _first, Card _second, bool _ignoreLink = false)
+    public static void SwapCards(Card _first, Card _second, bool _ignoreLink = false)
     {
         if (_first.transform.parent != _second.transform.parent)
         {
@@ -152,6 +147,6 @@ public class Actor : MonoBehaviour
             }
         }
 
-        print("swap cards: " + _first + " with: " + _second + ", parent name: " + _first.transform.parent.gameObject.name);
+        print("swap cards -- " + _first.transform.parent.name + "::" + _first + " -- with -- " + _second.transform.parent.name + "::" + _second);
     }
 }

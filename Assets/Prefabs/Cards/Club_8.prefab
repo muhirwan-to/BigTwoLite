@@ -20,6 +20,10 @@ PrefabInstance:
       value: Club_8
       objectReference: {fileID: 0}
     - target: {fileID: 6101013293842664181, guid: 773de013198e7584e951074c4a4d798b, type: 3}
+      propertyPath: m_flag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101013293842664181, guid: 773de013198e7584e951074c4a4d798b, type: 3}
       propertyPath: m_type
       value: 1
       objectReference: {fileID: 0}

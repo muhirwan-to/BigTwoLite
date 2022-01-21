@@ -19,6 +19,8 @@ public class GS_Gameplay : GameState
     private GameObject  m_deck;
     [SerializeField]
     private int         m_countdownSec;
+    [SerializeField]
+    private int         m_playingTimerSec;
 
     public EGamePhase   Phase { get; private set; }
 
@@ -164,21 +166,27 @@ public class GS_Gameplay : GameState
                 }
             case EGamePhase.ShuffleCard:
                 {
-                    UI.TextCountdown.gameObject.SetActive(false);
                     m_deck.SetActive(true);
-
+                    
                     StopCoroutine(StartCountdown());
                     StartCoroutine(DistributeCards());
+
+                    UI.TextCountdown.gameObject.SetActive(false);
+
                     break;
                 }
             case EGamePhase.PlayingCard:
                 {
-                    UI.ActionScreen.SetActive(true);
                     m_deck.SetActive(false);
+                    
+                    StopCoroutine(DistributeCards());
+                    StartCoroutine(StartPlayingTimer());
 
                     CloneCardsToPlayingArea();
 
-                    StopCoroutine(DistributeCards());
+                    UI.ActionScreen.SetActive(true);
+                    //UI.SortCard(GameplayUI.ESortType.SortByValue);
+
                     break;
                 }
             case EGamePhase.CompareCard:
@@ -212,9 +220,24 @@ public class GS_Gameplay : GameState
         SwitchPhase(EGamePhase.ShuffleCard);
     }
 
+    IEnumerator StartPlayingTimer()
+    {
+        int timer = m_playingTimerSec;
+
+        while (timer > 0)
+        {
+            UI.TextPlayingTimer.text = (timer--).ToString();
+            yield return new WaitForSeconds(1);
+        }
+
+        SwitchPhase(EGamePhase.CompareCard);
+    }
+
     IEnumerator DistributeCards()
     {
-        yield return new WaitForSeconds(0.5f);
+        const float waitInterval = 0.1f;
+
+        yield return new WaitForSeconds(waitInterval);
 
         List<Card> deck = new List<Card>();
         List<Card> shuffledDeck = new List<Card>();
@@ -236,7 +259,7 @@ public class GS_Gameplay : GameState
             player.PutCardsInHand(shuffledDeck.GetRange(0, numberOfCardsInHand));
             shuffledDeck.RemoveRange(0, numberOfCardsInHand);
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(waitInterval);
         }
 
         SwitchPhase(EGamePhase.PlayingCard);

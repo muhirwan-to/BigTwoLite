@@ -72,10 +72,10 @@ public class SequenceChecker : MonoBehaviour
         Card prev = null;
         foreach (Card card in _cardList)
         {
-            spadeCount += card.Type == Card.EType.Spade ? 1 : 0;
-            heartCount += card.Type == Card.EType.Heart ? 1 : 0;
-            clubCount += card.Type == Card.EType.Club ? 1 : 0;
-            diamondCount += card.Type == Card.EType.Diamond ? 1 : 0;
+            spadeCount += card.Flag == Card.EFlag.Spade ? 1 : 0;
+            heartCount += card.Flag == Card.EFlag.Heart ? 1 : 0;
+            clubCount += card.Flag == Card.EFlag.Club ? 1 : 0;
+            diamondCount += card.Flag == Card.EFlag.Diamond ? 1 : 0;
 
             if (!pairMap.ContainsKey(card.ValueInt))
             {

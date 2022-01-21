@@ -141,6 +141,7 @@ MonoBehaviour:
   m_type: 0
   m_value: 0
   Actor: {fileID: 0}
+  LinkedCard: {fileID: 0}
 --- !u!114 &-7039627167840147696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_object: {fileID: 0}
   m_isActive: 0
-  m_dragIntervalSec: 0.3
+  m_dragIntervalSec: 0.1
 --- !u!61 &1897473224090666570
 BoxCollider2D:
   m_ObjectHideFlags: 0
