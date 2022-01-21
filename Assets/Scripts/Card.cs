@@ -50,8 +50,6 @@ public class Card : MonoBehaviour
 
     private void Awake()
     {
-        m_playable = false;
-        Actor = null;
     }
 
     // Start is called before the first frame update

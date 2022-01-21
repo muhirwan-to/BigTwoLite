@@ -146,7 +146,5 @@ public class Actor : MonoBehaviour
                 SwapCards(_first.LinkedCard, _second.LinkedCard, true);
             }
         }
-
-        print("swap cards -- " + _first.transform.parent.name + "::" + _first + " -- with -- " + _second.transform.parent.name + "::" + _second);
     }
 }

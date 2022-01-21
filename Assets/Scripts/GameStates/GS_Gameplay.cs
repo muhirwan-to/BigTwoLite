@@ -122,19 +122,31 @@ public class GS_Gameplay : GameState
                         }
                     }
 
-                    if (lowCardList.Count == 5)
+                    if (lowCardList.Count > 0)
                     {
                         UI.LowHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(lowCardList)];
                     }
+                    else
+                    {
+                        UI.LowHint.text = "";
+                    }
                     
-                    if (midCardList.Count == 5)
+                    if (midCardList.Count > 0)
                     {
                         UI.MidHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(midCardList)];
                     }
+                    else
+                    {
+                        UI.MidHint.text = "";
+                    }
                     
-                    if (highCardList.Count == 3)
+                    if (highCardList.Count > 0)
                     {
                         UI.HighHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(highCardList)];
+                    }
+                    else
+                    {
+                        UI.HighHint.text = "";
                     }
 
                     break;
@@ -192,6 +204,9 @@ public class GS_Gameplay : GameState
             case EGamePhase.CompareCard:
                 {
                     UI.ActionScreen.SetActive(false);
+
+
+
                     break;
                 }
             case EGamePhase.Result:
