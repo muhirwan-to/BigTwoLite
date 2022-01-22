@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class GS_PlayerSelection : GameState
 {
-    private Actor               m_selectedPlayer;
-    private PlayerSelectionUI   UI;
+    private Avatar              m_selectedAvatar;
+    private PlayerSelectionUI   GUI => GetGUIAs<PlayerSelectionUI>();
+ 
+    public Avatar               SelectedAvatar => m_selectedAvatar;
 
     private void Awake()
     {
-        m_selectedPlayer = null;
-        
-        UI = Instantiate(UIPrefab.GetComponent<PlayerSelectionUI>(), GameManager.Instance.Canvas.transform);
-        UI.ButtonGo.onClick.AddListener(ChangeNextState);
+        m_selectedAvatar = null;
+
+        GUI.SetGameState(this);
+        GUI.transform.SetParent(GameManager.Instance.Canvas.transform, false);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        PutAvatarOnList();
+        CloneAvatarToCanvas();
     }
 
     // Update is called once per frame
@@ -27,45 +30,29 @@ public class GS_PlayerSelection : GameState
     {
     }
 
-    void PutAvatarOnList()
+    void CloneAvatarToCanvas()
     {
         List<Actor> players = GameManager.Instance.PlayerList;
-        GameObject avatarList = UI.AvatarListContainer;
+        GameObject avatarsContainer = GUI.AvatarsContainer;
 
-        float gapX = avatarList.GetComponent<RectTransform>().sizeDelta.x / (players.Count - 1);
-        float leftX = -avatarList.GetComponent<RectTransform>().sizeDelta.x / 2;
+        float xgap = avatarsContainer.GetComponent<RectTransform>().sizeDelta.x / (players.Count - 1);
+        float left = -avatarsContainer.GetComponent<RectTransform>().sizeDelta.x / 2;
 
         for (int i = 0; i < players.Count; i++)
         {
-            var avatar = Instantiate(players[i].Avatar, avatarList.transform);
-            if (avatar)
+            var avatarClone = Instantiate(players[i].Avatar, avatarsContainer.transform);
+            if (avatarClone)
             {
-                avatar.Actor = players[i];
-                avatar.transform.localPosition = new Vector3((leftX + (gapX * i)), avatarList.transform.position.y, avatarList.transform.position.z);
-                avatar.GetComponent<Button>().onClick.AddListener( delegate { SelectAvatar(avatar); });
+                avatarClone.SetActor(players[i]);
+                avatarClone.transform.localPosition = new Vector3((left + (xgap * i)), avatarsContainer.transform.position.y, avatarsContainer.transform.position.z);
+                avatarClone.GetComponent<Button>().onClick.AddListener( delegate { OnAvatarClick(avatarClone); });
             }
         }
     }
 
-    void SelectAvatar(Avatar _selected)
+    void OnAvatarClick(Avatar _selected)
     {
-        m_selectedPlayer = _selected.Actor;
-        UI.TextShouldSelect.SetActive(false);
-    }
-
-    void ChangeNextState()
-    {
-        // found selected avatar
-        if (m_selectedPlayer)
-        {
-            UI.TextShouldSelect.SetActive(false);
-
-            GameManager.Instance.SelectPlayer(m_selectedPlayer);
-            GameManager.Instance.SetGameState(EId.GS_Gameplay);
-        }
-        else
-        {
-            UI.TextShouldSelect.SetActive(true);
-        }
+        m_selectedAvatar = _selected;
+        GUI.TextShouldSelect.SetActive(false);
     }
 }

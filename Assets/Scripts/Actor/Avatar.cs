@@ -14,11 +14,17 @@ public class Avatar : MonoBehaviour
     private Sprite      m_faceLose;
     [SerializeField]
     private Image       m_currentFace;
+    [SerializeField]
+    private Actor       m_actor;
 
-    public Actor        Actor { get; set; }
+    public Actor        Actor { get; private set; }
 
     protected void Awake()
     {
+        if (!Actor)
+        {
+            Actor = m_actor;
+        }
     }
 
     // Start is called before the first frame update
@@ -34,6 +40,11 @@ public class Avatar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+
+    public void SetActor(Actor _actor)
+    {
+        Actor = _actor;
     }
 
     public void SetState(Actor.EState _state)

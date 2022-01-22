@@ -3,37 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+public enum EGamePhase
+{
+    Idle,
+    Preparation,
+    ShuffleCard,
+    PlayingCard,
+    CompareCard,
+    Result
+}
+
 public class GS_Gameplay : GameState
 {
-    public enum EGamePhase
-    {
-        Preparation,
-        ShuffleCard,
-        PlayingCard,
-        CompareCard,
-        Result,
-        Idle
-    }
-
     [SerializeField]
-    private GameObject  m_deck;
+    private GameObject  m_deckDeco;
     [SerializeField]
-    private int         m_countdownSec;
+    private int         m_preparationCountdownSec;
     [SerializeField]
     private int         m_playingTimerSec;
+    [SerializeField]
+    private GameObject  m_handCardsCoordinates;
 
-    public EGamePhase   Phase { get; private set; }
+    public GameObject   HandCardsCoordinates => m_handCardsCoordinates;
+    
+    public EGamePhase   GamePhase { get; private set; }
 
-    private GameplayUI  UI;
-    private Actor       m_mc;
+    private GameplayUI  GUI => GetGUIAs<GameplayUI>();
 
     private void Awake()
     {
-        UI = Instantiate(UIPrefab.GetComponent<GameplayUI>(), GameManager.Instance.Canvas.transform);
-        UI.ButtonCheat_Compare.onClick.AddListener(Cheat_Compare);
+        GUI.SetGameState(this);
+        GUI.transform.SetParent(GameManager.Instance.Canvas.transform, false);
 
-        Phase = EGamePhase.Idle;
-        m_mc = null;
+        GamePhase = EGamePhase.Idle;
     }
 
     // Start is called before the first frame update
@@ -42,40 +45,37 @@ public class GS_Gameplay : GameState
         int AIIdx = 1;
         foreach (var player in GameManager.Instance.PlayerList)
         {
-            Transform positionRef;
+            Transform coordinate;
 
             if (player.IsMC)
             {
-                positionRef = UI.AvatarPositions[0];
-                player.transform.position = UI.HandCardsPositions[0].position;
-
-                m_mc = player;
+                coordinate = GUI.AvatarCoordinates.transform.GetChild(0);
+                player.transform.position = HandCardsCoordinates.transform.GetChild(0).position;
             }
             else
             {
-                positionRef = UI.AvatarPositions[AIIdx];
-                player.transform.position = UI.HandCardsPositions[AIIdx].position;
+                coordinate = GUI.AvatarCoordinates.transform.GetChild(AIIdx);
+                player.transform.position = HandCardsCoordinates.transform.GetChild(AIIdx).position;
 
                 AIIdx++;
             }
 
-            Avatar avatar = Instantiate(player.Avatar, positionRef.parent);
+            Avatar avatar = Instantiate(player.Avatar, coordinate.parent);
 
             if (avatar)
             {
-                avatar.Actor = player;
-                avatar.transform.position = positionRef.position;
-                avatar.transform.rotation = positionRef.rotation;
-                avatar.transform.localScale = positionRef.localScale;
+                avatar.transform.position = coordinate.position;
+                avatar.transform.rotation = coordinate.rotation;
+                avatar.transform.localScale = coordinate.localScale;
 
-                Destroy(positionRef.gameObject);
-                Destroy(player.Avatar.gameObject);
-
+                avatar.SetActor(player);
                 player.SetAvatar(avatar);
+
+                Destroy(coordinate.gameObject);
             }
         }
 
-        Destroy(UI.HandCardsPositions[0].parent.gameObject);
+        Destroy(HandCardsCoordinates.transform.GetChild(0).parent.gameObject);
 
         SwitchPhase(EGamePhase.Preparation);
     }
@@ -83,7 +83,7 @@ public class GS_Gameplay : GameState
     // Update is called once per frame
     void Update()
     {
-        switch (Phase)
+        switch (GamePhase)
         {
             case EGamePhase.Preparation:
                 {
@@ -95,63 +95,7 @@ public class GS_Gameplay : GameState
                 }
             case EGamePhase.PlayingCard:
                 {
-                    List<Card> lowCardList = new List<Card>();
-                    List<Card> midCardList = new List<Card>();
-                    List<Card> highCardList = new List<Card>();
-
-                    for (int i = 0; i < UI.LowDropAreaList.transform.childCount; i++)
-                    {
-                        Transform drop = UI.LowDropAreaList.transform.GetChild(i);
-                        if (drop.childCount > 0)
-                        {
-                            lowCardList.Add(drop.GetChild(0).gameObject.GetComponent<Card>());
-                        }
-                    }
-
-                    for (int i = 0; i < UI.MidDropAreaList.transform.childCount; i++)
-                    {
-                        Transform drop = UI.MidDropAreaList.transform.GetChild(i);
-                        if (drop.childCount > 0)
-                        {
-                            midCardList.Add(drop.GetChild(0).gameObject.GetComponent<Card>());
-                        }
-                    }
-
-                    for (int i = 0; i < UI.HighDropAreaList.transform.childCount; i++)
-                    {
-                        Transform drop = UI.HighDropAreaList.transform.GetChild(i);
-                        if (drop.childCount > 0)
-                        {
-                            highCardList.Add(drop.GetChild(0).gameObject.GetComponent<Card>());
-                        }
-                    }
-
-                    if (lowCardList.Count > 0)
-                    {
-                        UI.LowHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(lowCardList)];
-                    }
-                    else
-                    {
-                        UI.LowHint.text = "";
-                    }
-                    
-                    if (midCardList.Count > 0)
-                    {
-                        UI.MidHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(midCardList)];
-                    }
-                    else
-                    {
-                        UI.MidHint.text = "";
-                    }
-                    
-                    if (highCardList.Count > 0)
-                    {
-                        UI.HighHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(highCardList)];
-                    }
-                    else
-                    {
-                        UI.HighHint.text = "";
-                    }
+                    UpdateHint();
 
                     break;
                 }
@@ -170,6 +114,57 @@ public class GS_Gameplay : GameState
         }
     }
 
+    void UpdateHint()
+    {
+        List<Card> lowCardList = new List<Card>();
+        List<Card> midCardList = new List<Card>();
+        List<Card> highCardList = new List<Card>();
+
+        foreach (DropArea area in GUI.DropAreaList)
+        {
+            if (area.AreaID == DropArea.EAreaID.LowArea)
+            {
+                if (area.transform.childCount > 0)
+                {
+                    lowCardList.Add(area.transform.GetChild(0).GetComponent<Card>());
+                }
+            }
+            else if (area.AreaID == DropArea.EAreaID.MidArea)
+            {
+                if (area.transform.childCount > 0)
+                {
+                    midCardList.Add(area.transform.GetChild(0).GetComponent<Card>());
+                }
+            }
+            else if (area.AreaID == DropArea.EAreaID.HighArea)
+            {
+                if (area.transform.childCount > 0)
+                {
+                    highCardList.Add(area.transform.GetChild(0).GetComponent<Card>());
+                }
+            }
+        }
+
+        GUI.LowHint.text = "";
+        GUI.MidHint.text = "";
+        GUI.HighHint.text = "";
+
+        if (lowCardList.Count > 0)
+        {
+            GUI.LowHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(lowCardList)];
+        }
+
+        if (midCardList.Count > 0)
+        {
+            GUI.MidHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(midCardList)];
+        }
+
+        if (highCardList.Count > 0)
+        {
+            GUI.HighHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(highCardList)];
+        }
+    }
+
     public void SwitchPhase(EGamePhase _newPhase)
     {
         switch (_newPhase)
@@ -178,36 +173,37 @@ public class GS_Gameplay : GameState
                 {
                     StopAllCoroutines();
                     StartCoroutine(StartCountdown());
+
                     break;
                 }
             case EGamePhase.ShuffleCard:
                 {
-                    m_deck.SetActive(true);
+                    m_deckDeco.SetActive(true);
                     
                     StopCoroutine(StartCountdown());
                     StartCoroutine(DistributeCards());
 
-                    UI.TextCountdown.gameObject.SetActive(false);
+                    GUI.TextPreparationCountdown.gameObject.SetActive(false);
 
                     break;
                 }
             case EGamePhase.PlayingCard:
                 {
-                    m_deck.SetActive(false);
+                    m_deckDeco.SetActive(false);
                     
                     StopCoroutine(DistributeCards());
                     StartCoroutine(StartPlayingTimer());
 
                     CloneCardsToPlayingArea();
 
-                    UI.ActionScreen.SetActive(true);
-                    //UI.SortCard(GameplayUI.ESortType.SortByValue);
+                    GUI.ActionScreen.SetActive(true);
+                    GUI.SortCard(ECardSortType.SortByValue);
 
                     break;
                 }
             case EGamePhase.CompareCard:
                 {
-                    UI.ActionScreen.SetActive(false);
+                    GUI.ActionScreen.SetActive(false);
 
                     _newPhase = EGamePhase.Result;
 
@@ -217,7 +213,7 @@ public class GS_Gameplay : GameState
                 }
             case EGamePhase.Result:
                 {
-                    UI.TextGameOver.gameObject.SetActive(true);
+                    GUI.TextGameOver.gameObject.SetActive(true);
 
                     int winner = Random.Range(0, (int)Time.timeAsDouble) % GameManager.Instance.PlayerList.Count;
 
@@ -228,7 +224,7 @@ public class GS_Gameplay : GameState
                         {
                             player.SetState(Actor.EState.Win);
 
-                            UI.TextGameOver.text = player.Name + " Win!";
+                            GUI.TextGameOver.text = player.Name + " Win!";
                         }
                         else
                         {
@@ -244,53 +240,99 @@ public class GS_Gameplay : GameState
                 }
         }
 
-        Phase = _newPhase;
+        GamePhase = _newPhase;
     }
 
-    IEnumerator StartCountdown()
+    void CloneCardsToPlayingArea()
     {
-        int countdown = m_countdownSec;
+        Actor mc = GameManager.Instance.MainCharacter;
+
+        if (!mc)
+        {
+            return;
+        }
+
+        if (GUI.InHandCardsGUI != null && GUI.InHandCardsGUI.Count > 0)
+        {
+            GUI.InHandCardsGUI.Clear();
+        }
+        else if (GUI.InHandCardsGUI == null)
+        {
+            GUI.InHandCardsGUI = new List<Card>(mc.InHandCards.Count);
+        }
+
+        for (int i = 0; i < GUI.HandAreaList.Count; i++)
+        {
+            DropArea area = GUI.HandAreaList[i];
+
+            if (i < mc.InHandCards.Count)
+            {
+                Card card = mc.InHandCards[i];
+                Card card_ui = Instantiate(card, area.transform);
+
+                card.LinkedCard = card_ui;
+
+                card_ui.transform.localPosition = new Vector3(0, 0, -1);
+                card_ui.transform.localRotation = Quaternion.identity;
+                card_ui.transform.localScale = new Vector3(10, 10, 10);
+
+                card_ui.LinkedCard = card;
+                card_ui.Actor = mc;
+                card_ui.IsGUI = true;
+
+                card_ui.GetComponent<DragAndDrop>().SetDragDropActive(true);
+                card_ui.GetComponent<Button>().onClick.AddListener(delegate { mc.SelectCard(card_ui); });
+
+                GUI.InHandCardsGUI.Add(card_ui);
+            }
+        }
+    }
+
+    public IEnumerator StartCountdown()
+    {
+        int countdown = m_preparationCountdownSec;
 
         while (countdown > 0)
         {
-            UI.TextCountdown.text = (countdown--).ToString();
+            GUI.TextPreparationCountdown.text = (countdown--).ToString();
             yield return new WaitForSeconds(1);
         }
 
         SwitchPhase(EGamePhase.ShuffleCard);
     }
 
-    IEnumerator StartPlayingTimer()
+    public IEnumerator StartPlayingTimer()
     {
         int timer = m_playingTimerSec;
 
         while (timer > 0)
         {
-            UI.TextPlayingTimer.text = (timer--).ToString();
+            GUI.TextPlayingTimer.text = (timer--).ToString();
             yield return new WaitForSeconds(1);
         }
 
         SwitchPhase(EGamePhase.CompareCard);
     }
 
-    IEnumerator DistributeCards()
+    public IEnumerator DistributeCards()
     {
         const float waitInterval = 0.1f;
 
         yield return new WaitForSeconds(waitInterval);
 
-        List<Card> deck = new List<Card>();
-        List<Card> shuffledDeck = new List<Card>();
+        List<Card> cards = GameManager.Instance.CardList;
+        List<Card> shuffledDeck = new List<Card>(cards.Count);
 
-        deck.AddRange(GameManager.Instance.CardListPrefab);
-
-        while (deck.Count > 0)
+        while (cards.Count > 0)
         {
-            int randIdx = Random.Range(0, deck.Count);
+            int randIdx = Random.Range(0, cards.Count);
 
-            shuffledDeck.Add(deck[randIdx]);
-            deck.RemoveAt(randIdx);
+            shuffledDeck.Add(cards[randIdx]);
+            cards.RemoveAt(randIdx);
         }
+
+        // put cards back
+        GameManager.Instance.CardList.AddRange(shuffledDeck);
 
         int numberOfCardsInHand = shuffledDeck.Count / GameManager.Instance.PlayerList.Count;
 
@@ -303,44 +345,5 @@ public class GS_Gameplay : GameState
         }
 
         SwitchPhase(EGamePhase.PlayingCard);
-    }
-
-    void CloneCardsToPlayingArea()
-    {
-        if (m_mc)
-        {
-            for (int i = 0; i < UI.PlayedCards.transform.childCount; i++)
-            {
-                GameObject area = UI.PlayedCards.transform.GetChild(i).gameObject;
-
-                if (i < m_mc.InHandCards.Count)
-                {
-                    Card card = m_mc.InHandCards[i];
-                    Card clone = Instantiate(card, area.transform);
-
-                    card.LinkedCard = clone;
-
-                    clone.transform.localPosition = new Vector3(0, 0, -1);
-                    clone.transform.localRotation = Quaternion.identity;
-                    clone.transform.localScale = new Vector3(10, 10, 10);
-
-                    clone.LinkedCard = card;
-                    clone.Actor = m_mc;
-
-                    clone.SetPlayable();
-                    clone.GetComponent<DragAndDrop>().SetDragDropActive(true);
-                    clone.GetComponent<Button>().onClick.AddListener(delegate { m_mc.SelectCard(clone); });
-                }
-            }
-        }
-    }
-
-    void Cheat_Compare()
-    {
-        if (Phase == EGamePhase.PlayingCard)
-        {
-            StopCoroutine(StartPlayingTimer());
-            SwitchPhase(EGamePhase.CompareCard);
-        }
     }
 }

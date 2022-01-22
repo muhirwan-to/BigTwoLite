@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
+    public enum ESide
+    {
+        FaceUp,
+        FaceDown
+    }
+
     public enum EFlag
     {
         Diamond,
@@ -36,17 +42,14 @@ public class Card : MonoBehaviour
     [SerializeField]
     private EValue      m_value;
 
-    private bool        m_playable;
-
     public EFlag        Flag => m_flag;
     public EValue       Value => m_value;
     public int          ValueInt => (int)m_value;
-    public bool         Playable => m_playable;
 
-    [HideInInspector]
-    public Actor        Actor;
-    [HideInInspector]
-    public Card         LinkedCard;
+    public bool         IsGUI { get; set; }
+    public Actor        Actor { get; set; }
+    public Card         LinkedCard { get; set; }
+    
 
     private void Awake()
     {
@@ -54,29 +57,23 @@ public class Card : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-        
+    {        
     }
 
     // Update is called once per frame
     void Update()
     {
-
     }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("DropArea"))
         {
-            if (m_playable && collision.transform.childCount == 0)
+            if (IsGUI && collision.transform.childCount == 0)
             {
                 GetComponent<DragAndDrop>().SetObjectHover(collision.gameObject);
             }
         }
-    }
-
-    public void SetPlayable()
-    {
-        m_playable = true;
     }
 }

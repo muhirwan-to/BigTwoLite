@@ -28,11 +28,11 @@ public class AIController : PlayerController
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.CurrentGameState.ID == GameState.EId.GS_Gameplay)
+        if (GameManager.Instance.CurrentGameState.ID == EGameStateID.GS_Gameplay)
         {
             GS_Gameplay gs = GameManager.Instance.CurrentGameState as GS_Gameplay;
 
-            if (gs.Phase == GS_Gameplay.EGamePhase.PlayingCard)
+            if (gs.GamePhase == EGamePhase.PlayingCard)
             {
                 switch (m_difficulty)
                 {

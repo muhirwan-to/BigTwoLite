@@ -15,13 +15,14 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<GameState>     m_gameStateListPrefab;
     [SerializeField]
-    private List<Card>          m_cardListPrefab;
+    private List<Card>          m_cardList;
     [SerializeField]
     private List<Actor>         m_playerList;
 
     public GameObject           Canvas => m_canvas;
-    public List<Card>           CardListPrefab => m_cardListPrefab;
+    public List<Card>           CardList => m_cardList;
     public List<Actor>          PlayerList => m_playerList;
+    public Actor                MainCharacter { get; private set; }
 
     public GameState            CurrentGameState { get; private set; }
     public SequenceChecker      SequenceChecker => GetComponent<SequenceChecker>();
@@ -43,7 +44,7 @@ public class GameManager : MonoBehaviour
     {
         if (m_gameStateListPrefab.Any())
         {
-            SetGameState(GameState.EId.GS_PlayerSelection);
+            SetGameState(EGameStateID.GS_PlayerSelection);
         }
     }
 
@@ -53,26 +54,13 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void SelectPlayer(Actor _selected)
-    {
-        foreach (var player in PlayerList)
-        {
-            player.SetRole(player == _selected);
-        }
-    }
-
-    public void SetGameState(int _id)
-    {
-        SetGameState((GameState.EId)_id);
-    }
-
-    public void SetGameState(GameState.EId _id)
+    public void SetGameState(EGameStateID _id)
     {
         if (CurrentGameState)
         {
             for (int i = 0; i < m_canvas.transform.childCount; i++)
             {
-                // destroy UI objects
+                // destroy GUI objects
                 Destroy(m_canvas.transform.GetChild(i).gameObject);
             }
 
@@ -89,5 +77,15 @@ public class GameManager : MonoBehaviour
         {
             CurrentGameState = null;
         }
+    }
+
+    public void SetMainCharacter(Actor _mc)
+    {
+        foreach (Actor player in PlayerList)
+        {
+            player.SetRole(player == _mc);
+        }
+
+        MainCharacter = _mc;
     }
 }

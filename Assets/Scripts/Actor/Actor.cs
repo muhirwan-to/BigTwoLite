@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Actor : MonoBehaviour
 {
@@ -19,31 +18,32 @@ public class Actor : MonoBehaviour
     [SerializeField]
     private GameObject          m_inHandCardsContainer;
 
-    private PlayerController    m_controller;
-    private Card                m_selectedCard;
-    private EState              m_state;
-
     public Avatar               Avatar => m_avatar;
     public string               Name => m_name;
     public bool                 IsMC { get; private set; }
     public List<Card>           InHandCards { get; private set; }
 
     [HideInInspector]
-    public SequenceChecker.ESequence    LowSequence;
+    public SequenceChecker.ESequence    LowCardSequence;
     [HideInInspector]
-    public SequenceChecker.ESequence    MidSequence;
+    public SequenceChecker.ESequence    MidCardSequence;
     [HideInInspector]
-    public SequenceChecker.ESequence    HighSequence;
+    public SequenceChecker.ESequence    HighCardSequence;
     [HideInInspector]
-    public Card.EValue                  LowHigher;
+    public Card.EValue                  LowCardHighest;
     [HideInInspector]
-    public Card.EValue                  MidHigher;
+    public Card.EValue                  MidCardHighest;
     [HideInInspector]
-    public Card.EValue                  HighHigher;
+    public Card.EValue                  HighCardHighest;
+
+
+    private PlayerController    m_controller;
+    private Card                m_selectedCard;
+    private EState              m_state;
+
 
     private void Awake()
     {
-        m_avatar.Actor = this;
         m_selectedCard = null;
         m_state = EState.Idle;
     }
@@ -106,14 +106,10 @@ public class Actor : MonoBehaviour
 
             InHandCards.Add(card);
         }
-
+            
         if (!IsMC)
         {
-            m_inHandCardsContainer.transform.localRotation = Quaternion.Euler(
-                m_inHandCardsContainer.transform.localRotation.eulerAngles.x
-                , -180
-                , m_inHandCardsContainer.transform.localRotation.eulerAngles.z
-                );
+            FlipHandCards(Card.ESide.FaceDown);
         }
     }
 
@@ -172,6 +168,21 @@ public class Actor : MonoBehaviour
             {
                 SwapCards(_first.LinkedCard, _second.LinkedCard, true);
             }
+        }
+    }
+
+
+    public void FlipHandCards(Card.ESide _side)
+    {
+        Quaternion quat = m_inHandCardsContainer.transform.rotation;
+
+        if (_side == Card.ESide.FaceUp)
+        {
+            m_inHandCardsContainer.transform.rotation = Quaternion.Euler(quat.eulerAngles.x, 180, quat.eulerAngles.z);
+        }
+        else
+        {
+            m_inHandCardsContainer.transform.rotation = Quaternion.Euler(quat.eulerAngles.x, -180, quat.eulerAngles.z);
         }
     }
 
