@@ -46,6 +46,8 @@ public class GameManager : MonoBehaviour
         {
             SetGameState(EGameStateID.GS_PlayerSelection);
         }
+
+        GetComponent<AudioSource>().Play();
     }
 
     // Update is called once per frame
