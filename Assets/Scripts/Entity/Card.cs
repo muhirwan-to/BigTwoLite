@@ -4,6 +4,32 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+public class CardComparator : IComparer<Card>
+{
+    public delegate void TrueCallback(Card _1, Card _2);
+
+    public CardComparator(TrueCallback _callback)
+    {
+        callback = _callback;
+    }
+
+    public int Compare(Card _1, Card _2)
+    {
+        int compare = _1.Value.CompareTo(_2.Value);
+        if (compare < 0)
+        {
+            if (callback != null)
+            {
+                callback(_1, _2);
+            }
+        }
+
+        return compare;
+    }
+
+    private TrueCallback callback;
+}
+
 public class Card : MonoBehaviour
 {
     public enum ESide

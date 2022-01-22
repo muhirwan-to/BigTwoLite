@@ -20,6 +20,8 @@ public class GameplayUI : GUIBase
     [SerializeField]
     private Button              m_skipButton_Cheat;
     [SerializeField]
+    private Button              m_flipButton_Cheat;
+    [SerializeField]
     private Text                m_preparationCountdownText;
     [SerializeField]
     private Text                m_gameOverText;
@@ -43,6 +45,7 @@ public class GameplayUI : GUIBase
     public Button               ButtonHelp => m_helpButton;
     public Button               ButtonSort => m_sortButton;
     public Button               ButtonSkip_Cheat => m_skipButton_Cheat;
+    public Button               ButtonFlip_Cheat => m_flipButton_Cheat;
     public Text                 TextPreparationCountdown => m_preparationCountdownText;
     public Text                 TextGameOver => m_gameOverText;
     public Text                 TextPlayingTimer => m_playingTimerText;
@@ -65,6 +68,7 @@ public class GameplayUI : GUIBase
         m_lastSortByButton = ECardSortType.None;
         m_sortButton.onClick.AddListener(OnButtonClick_Sort);
         m_skipButton_Cheat.onClick.AddListener(OnButtonClick_Cheat_Skip);
+        m_flipButton_Cheat.onClick.AddListener(OnButtonClick_Cheat_FlipOpponentCards);
     }
 
     // Update is called once per frame
@@ -105,6 +109,17 @@ public class GameplayUI : GUIBase
         {
             StopCoroutine(gs.StartPlayingTimer());
             gs.SwitchPhase(EGamePhase.CompareCard);
+        }
+    }
+
+    void OnButtonClick_Cheat_FlipOpponentCards()
+    {
+        foreach (Actor player in GameManager.Instance.PlayerList)
+        {
+            if (!player.IsMC)
+            {
+                player.FlipHandCards();
+            }
         }
     }
 

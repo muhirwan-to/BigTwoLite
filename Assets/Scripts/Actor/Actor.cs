@@ -37,15 +37,17 @@ public class Actor : MonoBehaviour
     public Card.EValue                  HighCardHighest;
 
 
-    private PlayerController    m_controller;
+    private Controller          m_controller;
     private Card                m_selectedCard;
     private EState              m_state;
+    private Card.ESide          m_handCardsSide;
 
 
     private void Awake()
     {
         m_selectedCard = null;
         m_state = EState.Idle;
+        m_handCardsSide = Card.ESide.FaceUp;
     }
 
     // Start is called before the first frame update
@@ -82,6 +84,8 @@ public class Actor : MonoBehaviour
         {
             m_controller = gameObject.AddComponent<AIController>();
         }
+        
+        m_controller.Actor = this;
     }
 
     public void PutCardsInHand(List<Card> _cards)
@@ -104,7 +108,7 @@ public class Actor : MonoBehaviour
             
         if (!IsMC)
         {
-            FlipHandCards(Card.ESide.FaceDown);
+            //FlipHandCards(Card.ESide.FaceDown);
         }
     }
 
@@ -153,6 +157,22 @@ public class Actor : MonoBehaviour
         }
     }
 
+    public void FlipHandCards()
+    {
+        Quaternion quat = m_inHandCardsContainer.transform.rotation;
+
+        // flip opposite side
+        if (m_handCardsSide == Card.ESide.FaceUp)
+        {
+            m_inHandCardsContainer.transform.rotation = Quaternion.Euler(quat.eulerAngles.x, -180, quat.eulerAngles.z);
+            m_handCardsSide = Card.ESide.FaceDown;
+        }
+        else
+        {
+            m_inHandCardsContainer.transform.rotation = Quaternion.Euler(quat.eulerAngles.x, 0, quat.eulerAngles.z);
+            m_handCardsSide = Card.ESide.FaceUp;
+        }
+    }
 
     public void FlipHandCards(Card.ESide _side)
     {
@@ -160,12 +180,14 @@ public class Actor : MonoBehaviour
 
         if (_side == Card.ESide.FaceUp)
         {
-            m_inHandCardsContainer.transform.rotation = Quaternion.Euler(quat.eulerAngles.x, 180, quat.eulerAngles.z);
+            m_inHandCardsContainer.transform.rotation = Quaternion.Euler(quat.eulerAngles.x, 0, quat.eulerAngles.z);
         }
         else
         {
             m_inHandCardsContainer.transform.rotation = Quaternion.Euler(quat.eulerAngles.x, -180, quat.eulerAngles.z);
         }
+
+        m_handCardsSide = _side;
     }
 
     public void SetState(EState _state)

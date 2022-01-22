@@ -3,6 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum EGameDifficulty
+{
+    Easy,
+    Medium,
+    Hard
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager   Instance => s_instance;
@@ -15,12 +23,15 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<GameState>     m_gameStateListPrefab;
     [SerializeField]
+    private EGameDifficulty     m_gameDifficulty;
+    [SerializeField]
     private List<Card>          m_cardList;
     [SerializeField]
     private List<Actor>         m_playerList;
 
     public GameObject           Canvas => m_canvas;
     public List<Card>           CardList => m_cardList;
+    public EGameDifficulty      GameDifficulty => m_gameDifficulty;
     public List<Actor>          PlayerList => m_playerList;
     public Actor                MainCharacter { get; private set; }
 
