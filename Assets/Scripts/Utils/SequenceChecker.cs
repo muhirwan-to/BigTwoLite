@@ -93,7 +93,7 @@ public class SequenceChecker : MonoBehaviour
         }
 
         bool flush = spadeCount == 5 || heartCount == 5 || clubCount == 5 || diamondCount == 5;
-        bool straight = valueDifference == 1;
+        bool straight = _cardList.Count == 5 && valueDifference == 1;
         bool hasQuartet = false, hasTriplet = false, hasPair = false, hasTwoPairs = false;
 
         int tripletInt = 0, pairInt = 0;
