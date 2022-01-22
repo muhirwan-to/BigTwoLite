@@ -53,11 +53,13 @@ public class Card : MonoBehaviour
 
     private void Awake()
     {
+
     }
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
+        GetComponent<DragAndDrop>().OnDropCallback = OnDrop;
     }
 
     // Update is called once per frame
@@ -73,6 +75,18 @@ public class Card : MonoBehaviour
             if (IsGUI && collision.transform.childCount == 0)
             {
                 GetComponent<DragAndDrop>().SetObjectHover(collision.gameObject);
+            }
+        }
+    }
+
+    public void OnDrop(GameObject _object)
+    {
+        DropArea dropArea = _object.GetComponent<DropArea>();
+        if (dropArea && dropArea.LinkedCardParent)
+        {
+            if (IsGUI && LinkedCard && !LinkedCard.IsGUI && LinkedCard.transform.parent != dropArea.LinkedCardParent)
+            {
+                Utility.SwapParent(LinkedCard.transform, dropArea.LinkedCardParent.GetChild(0), false);
             }
         }
     }

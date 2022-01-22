@@ -16,6 +16,8 @@ public class DropArea : MonoBehaviour
     private EAreaID     m_areaID;
 
     public EAreaID      AreaID => m_areaID;
+    public Transform    LinkedCardParent { get; set; }
+
 
     // Start is called before the first frame update
     void Start()

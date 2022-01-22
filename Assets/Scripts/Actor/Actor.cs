@@ -97,12 +97,7 @@ public class Actor : MonoBehaviour
 
         for (int i = 0; i < _cards.Count; i++)
         {
-            Card card = Instantiate(_cards[i], m_inHandCardsContainer.transform);
-            card.transform.localPosition = m_inHandCardsContainer.transform.GetChild(0).localPosition;
-            card.transform.localRotation = m_inHandCardsContainer.transform.GetChild(0).localRotation;
-            card.transform.localScale = m_inHandCardsContainer.transform.GetChild(0).localScale;
-
-            DestroyImmediate(m_inHandCardsContainer.transform.GetChild(0).gameObject);
+            Card card = Instantiate(_cards[i], m_inHandCardsContainer.transform.GetChild(i).transform);
 
             InHandCards.Add(card);
         }
@@ -142,24 +137,11 @@ public class Actor : MonoBehaviour
     {
         if (_first.transform.parent != _second.transform.parent)
         {
-            GameObject firstParent = _first.transform.parent.gameObject;
-
-            _first.transform.SetParent(_second.transform.parent, false);
-            _second.transform.SetParent(firstParent.transform, false);
+            Utility.SwapParent(_first.transform, _second.transform, false);
         }
         else
         {
-            Vector3 tmp_pos = new Vector3(_first.transform.localPosition.x, _first.transform.localPosition.y, _first.transform.localPosition.z);
-            Quaternion tmp_rot = new Quaternion(_first.transform.localRotation.x, _first.transform.localRotation.y, _first.transform.localRotation.z, _first.transform.localRotation.w);
-            Vector3 tmp_sca = new Vector3(_first.transform.localScale.x, _first.transform.localScale.y, _first.transform.localScale.z);
-
-            _first.transform.localPosition = _second.transform.localPosition;
-            _first.transform.localRotation = _second.transform.localRotation;
-            _first.transform.localScale = _second.transform.localScale;
-
-            _second.transform.localPosition = tmp_pos;
-            _second.transform.localRotation = tmp_rot;
-            _second.transform.localScale = tmp_sca;
+            Utility.SwapTransformLocal(_first.transform, _second.transform);
         }
 
         if (!_ignoreLink)

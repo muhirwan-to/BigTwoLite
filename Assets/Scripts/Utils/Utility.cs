@@ -34,8 +34,11 @@ public static class Utility
         _t2.localScale = tmp_sca;
     }
 
-    public static void Flip(Transform t)
+    public static void SwapParent(Transform _c1, Transform _c2, bool worldPositionStays)
     {
+        Transform firstParent = _c1.parent;
 
+        _c1.SetParent(_c2.parent, worldPositionStays);
+        _c2.SetParent(firstParent, worldPositionStays);
     }
 }

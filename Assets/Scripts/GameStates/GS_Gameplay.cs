@@ -195,6 +195,7 @@ public class GS_Gameplay : GameState
                     StartCoroutine(StartPlayingTimer());
 
                     CloneCardsToPlayingArea();
+                    LinkDropAreaWithCards(GameManager.Instance.MainCharacter);
 
                     GUI.ActionScreen.SetActive(true);
                     GUI.SortCard(ECardSortType.SortByValue);
@@ -285,6 +286,14 @@ public class GS_Gameplay : GameState
 
                 GUI.InHandCardsGUI.Add(card_ui);
             }
+        }
+    }
+
+    void LinkDropAreaWithCards(Actor _actor)
+    {
+        for (int i = 0; i < GUI.DropAreaList.Count; i++)
+        {
+            GUI.DropAreaList[i].LinkedCardParent = _actor.InHandCards[i].transform.parent;
         }
     }
 

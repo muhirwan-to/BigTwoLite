@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public delegate void OnDropCallback(GameObject _object);
+
 public class DragAndDrop : MonoBehaviour, IInitializePotentialDragHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField]
@@ -24,10 +26,14 @@ public class DragAndDrop : MonoBehaviour, IInitializePotentialDragHandler, IDrag
     public bool         IsDragging => m_isDragging;
     public bool         IsActive => m_isActive;
 
+    public OnDropCallback   OnDropCallback;
+
     private void Awake()
     {
         m_lastObjectHover = null;
         m_dragTimeStartSec = 0;
+
+        OnDropCallback = null;
     }
 
     // Start is called before the first frame update
@@ -124,6 +130,11 @@ public class DragAndDrop : MonoBehaviour, IInitializePotentialDragHandler, IDrag
             if (m_lastObjectHover)
             {
                 m_object.transform.SetParent(m_lastObjectHover.transform);
+
+                if (OnDropCallback != null)
+                {
+                    OnDropCallback(m_lastObjectHover);
+                }
             }
 
             ResetLocalPosition();

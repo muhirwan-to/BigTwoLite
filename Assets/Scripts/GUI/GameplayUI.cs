@@ -122,7 +122,6 @@ public class GameplayUI : GUIBase
         for (int i = 0; i < HandAreaList.Count; i++)
         {
             InHandCardsGUI[i].transform.SetParent(HandAreaList[i].transform, false);
-            print("sortenedCards: " + InHandCardsGUI[i].Value);
         }
     }
 }
