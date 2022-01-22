@@ -32,6 +32,8 @@ public class GameplayUI : GUIBase
     [SerializeField]
     private GameObject          m_actionScreen;
     [SerializeField]
+    private GameObject          m_playersScore;
+    [SerializeField]
     private List<DropArea>      m_dropAreaList;
     [SerializeField]
     private List<DropArea>      m_handAreaList;
@@ -51,6 +53,7 @@ public class GameplayUI : GUIBase
     public Text                 TextPlayingTimer => m_playingTimerText;
     public GameObject           AvatarCoordinates => m_avatarCoordinates;
     public GameObject           ActionScreen => m_actionScreen;
+    public GameObject           PlayersScore => m_playersScore;
     public List<DropArea>       DropAreaList => m_dropAreaList;
     public List<DropArea>       HandAreaList => m_handAreaList;
     public Text                 LowHint => m_lowHint;

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Actor : MonoBehaviour
 {
     public enum EState
@@ -22,21 +24,16 @@ public class Actor : MonoBehaviour
     public string               Name => m_name;
     public bool                 IsMC { get; private set; }
     public List<Card>           InHandCards { get; private set; }
+    public int                  Score => m_score;
 
     [HideInInspector]
-    public SequenceChecker.ESequence    LowCardSequence;
+    public CardGroup            LowCardGroup;
     [HideInInspector]
-    public SequenceChecker.ESequence    MidCardSequence;
+    public CardGroup            MidCardGroup;
     [HideInInspector]
-    public SequenceChecker.ESequence    HighCardSequence;
-    [HideInInspector]
-    public Card.EValue                  LowCardHighest;
-    [HideInInspector]
-    public Card.EValue                  MidCardHighest;
-    [HideInInspector]
-    public Card.EValue                  HighCardHighest;
+    public CardGroup            HighCardGroup;
 
-
+    private int                 m_score;
     private Controller          m_controller;
     private Card                m_selectedCard;
     private EState              m_state;
@@ -48,6 +45,16 @@ public class Actor : MonoBehaviour
         m_selectedCard = null;
         m_state = EState.Idle;
         m_handCardsSide = Card.ESide.FaceUp;
+
+        LowCardGroup.Area = CardGroup.EGroupArea.Low;
+        LowCardGroup.HighestValue = Card.EValue.Two;
+        LowCardGroup.WinRate = 0;
+        MidCardGroup.Area = CardGroup.EGroupArea.Mid;
+        MidCardGroup.HighestValue = Card.EValue.Two;
+        MidCardGroup.WinRate = 0;
+        HighCardGroup.Area = CardGroup.EGroupArea.High;
+        HighCardGroup.HighestValue = Card.EValue.Two;
+        HighCardGroup.WinRate = 0;
     }
 
     // Start is called before the first frame update
@@ -60,6 +67,51 @@ public class Actor : MonoBehaviour
     void Update()
     {
         Avatar?.SetState(m_state);
+
+        UpdateCardSequences();
+    }
+
+    void UpdateCardSequences()
+    {
+        if (InHandCards == null)
+        {
+            return;
+        }
+
+        List<Card> lowCards = InHandCards.GetRange(0, 5);
+        List<Card> midCards = InHandCards.GetRange(5, 5);
+        List<Card> highCards = InHandCards.GetRange(10, 3);
+
+        LowCardGroup.Sequence = GameManager.Instance.SequenceChecker.GetSequence(lowCards);
+        MidCardGroup.Sequence = GameManager.Instance.SequenceChecker.GetSequence(midCards);
+        HighCardGroup.Sequence = GameManager.Instance.SequenceChecker.GetSequence(highCards);
+
+        foreach (Card card in lowCards)
+        {
+            if (LowCardGroup.HighestValue.CompareTo(card.Value) < 0)
+            {
+                LowCardGroup.HighestValue = card.Value;
+                LowCardGroup.HighestFlag = card.Flag;
+            }
+        }
+
+        foreach (Card card in midCards)
+        {
+            if (MidCardGroup.HighestValue.CompareTo(card.Value) < 0)
+            {
+                MidCardGroup.HighestValue = card.Value;
+                MidCardGroup.HighestFlag = card.Flag;
+            }
+        }
+
+        foreach (Card card in highCards)
+        {
+            if (HighCardGroup.HighestValue.CompareTo(card.Value) < 0)
+            {
+                HighCardGroup.HighestValue = card.Value;
+                HighCardGroup.HighestFlag = card.Flag;
+            }
+        }
     }
 
     public void SetAvatar(Avatar _avatar)
@@ -108,7 +160,7 @@ public class Actor : MonoBehaviour
             
         if (!IsMC)
         {
-            //FlipHandCards(Card.ESide.FaceDown);
+            FlipHandCards(Card.ESide.FaceDown);
         }
     }
 
@@ -193,5 +245,15 @@ public class Actor : MonoBehaviour
     public void SetState(EState _state)
     {
         m_state = _state;
+    }
+
+    public void AddScore(int _addedScore)
+    {
+        m_score += _addedScore;
+    }
+
+    public void MultiplyScore(int _multiplier)
+    {
+        m_score *= _multiplier;
     }
 }

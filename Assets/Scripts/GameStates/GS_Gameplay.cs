@@ -30,6 +30,7 @@ public class GS_Gameplay : GameState
     public EGamePhase   GamePhase { get; private set; }
 
     private GameplayUI  GUI => GetGUIAs<GameplayUI>();
+    private Actor       m_winner;
 
     private void Awake()
     {
@@ -101,6 +102,8 @@ public class GS_Gameplay : GameState
                 }
             case EGamePhase.CompareCard:
                 {
+                    SwitchPhase(EGamePhase.Result);
+
                     break;
                 }
             case EGamePhase.Result:
@@ -145,24 +148,108 @@ public class GS_Gameplay : GameState
             }
         }
 
-        GUI.LowHint.text = "";
-        GUI.MidHint.text = "";
-        GUI.HighHint.text = "";
+        GUI.LowHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(lowCardList)];
+        GUI.MidHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(midCardList)];
+        GUI.HighHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(highCardList)];
+    }
 
-        if (lowCardList.Count > 0)
+    void UpdateScore()
+    {
+        int highestScore = 0;
+
+        for (int i = 0; i < GameManager.Instance.PlayerList.Count; i++)
         {
-            GUI.LowHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(lowCardList)];
+            Actor player = GameManager.Instance.PlayerList[i];
+
+            foreach (Actor other in GameManager.Instance.PlayerList)
+            {
+                if (player != other)
+                {
+                    player.AddScore(CalculateScore(player.LowCardGroup, other.LowCardGroup));
+                    player.AddScore(CalculateScore(player.MidCardGroup, other.MidCardGroup));
+                    player.AddScore(CalculateScore(player.HighCardGroup, other.HighCardGroup));
+
+                    int totalWinRate = player.LowCardGroup.WinRate + player.MidCardGroup.WinRate + player.HighCardGroup.WinRate;
+                    int oneShotScore = GameManager.Instance.PlayerList.Count - 1;
+                    int tripleKillScore = 3 * oneShotScore;
+
+                    if (totalWinRate == tripleKillScore)
+                    {
+                        player.MultiplyScore(4);
+                    }
+                    else if (totalWinRate >= oneShotScore)
+                    {
+                        player.MultiplyScore(2);
+                    }
+                }
+            }
+
+            if (player.Score > highestScore)
+            {
+                m_winner = player;
+                highestScore = player.Score;
+            }
+
+            GUI.PlayersScore.SetActive(true);
+            GUI.PlayersScore.transform.GetChild(i).GetComponent<Text>().text = "Score: " + player.Score;
+        }
+    }
+
+    int CalculateScore(CardGroup _me, CardGroup _other)
+    {
+        int score_ = 0;
+
+        int sequenceCompare = _me.Sequence.CompareTo(_other.Sequence);
+        int valueCompare = _me.HighestValue.CompareTo(_other.HighestValue);
+        int flagCompare = _me.HighestFlag.CompareTo(_other.HighestFlag);
+
+        if (sequenceCompare > 0
+            || (sequenceCompare == 0 && valueCompare > 0)
+            || (sequenceCompare == 0 && valueCompare == 0 && flagCompare > 0))
+        {
+            score_ += 1;
+
+            _me.WinRate++;
         }
 
-        if (midCardList.Count > 0)
+        if (_me.Sequence == SequenceChecker.ESequence.StraightFlush)
         {
-            GUI.MidHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(midCardList)];
+            if (_me.Area == CardGroup.EGroupArea.Low)
+            {
+                score_ += 9;
+            }
+            else if (_me.Area == CardGroup.EGroupArea.Mid)
+            {
+                score_ += 18;
+            }
+        }
+        else if (_me.Sequence == SequenceChecker.ESequence.FourOfAKind)
+        {
+            if (_me.Area == CardGroup.EGroupArea.Low)
+            {
+                score_ += 7;
+            }
+            else if (_me.Area == CardGroup.EGroupArea.Mid)
+            {
+                score_ += 12;
+            }
+        }
+        else if (_me.Sequence == SequenceChecker.ESequence.FullHouse)
+        {
+            if (_me.Area == CardGroup.EGroupArea.Mid)
+            {
+                score_ += 5;
+            }
+        }
+        else if (_me.Sequence == SequenceChecker.ESequence.ThreeOfAKind)
+        {
+            if (_me.Area == CardGroup.EGroupArea.High)
+            {
+                score_ += 5;
+            }
         }
 
-        if (highCardList.Count > 0)
-        {
-            GUI.HighHint.text = GameManager.Instance.SequenceChecker.SequenceName[(int)GameManager.Instance.SequenceChecker.GetSequence(highCardList)];
-        }
+        return score_;
     }
 
     public void SwitchPhase(EGamePhase _newPhase)
@@ -206,30 +293,29 @@ public class GS_Gameplay : GameState
                 {
                     GUI.ActionScreen.SetActive(false);
 
-                    _newPhase = EGamePhase.Result;
+                    foreach (Actor player in GameManager.Instance.PlayerList)
+                    {
+                        player.FlipHandCards(Card.ESide.FaceUp);
+                    }
 
-                    SwitchPhase(_newPhase);
+                    UpdateScore();
 
                     break;
                 }
             case EGamePhase.Result:
                 {
                     GUI.TextGameOver.gameObject.SetActive(true);
+                    GUI.TextGameOver.text = (m_winner ? m_winner.Name : "No One") + " Win!";
 
-                    int winner = Random.Range(0, (int)Time.timeAsDouble) % GameManager.Instance.PlayerList.Count;
-
-                    for (int i = 0; i < GameManager.Instance.PlayerList.Count; i++)
+                    foreach (Actor player in GameManager.Instance.PlayerList)
                     {
-                        Actor player = GameManager.Instance.PlayerList[i];
-                        if (i == winner)
+                        if (player != m_winner)
                         {
-                            player.SetState(Actor.EState.Win);
-
-                            GUI.TextGameOver.text = player.Name + " Win!";
+                            player.SetState(Actor.EState.Lose);
                         }
                         else
                         {
-                            player.SetState(Actor.EState.Lose);
+                            player.SetState(Actor.EState.Win);
                         }
                     }
 

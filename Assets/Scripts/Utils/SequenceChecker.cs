@@ -7,6 +7,7 @@ public class SequenceChecker : MonoBehaviour
 {
     public enum ESequence
     {
+        None,
         HighCard,
         Pair,
         TwoPairs,
@@ -37,6 +38,7 @@ public class SequenceChecker : MonoBehaviour
 
     public string[] SequenceName = 
     {
+        "",
         "High Card",
         "Pair",
         "Two Pairs",
@@ -62,6 +64,11 @@ public class SequenceChecker : MonoBehaviour
 
     public ESequence GetSequence(List<Card> _cardList)
     {
+        if (_cardList.Count <= 0)
+        {
+            return ESequence.None;
+        }
+
         _cardList.Sort((card1, card2) => card1.Value.CompareTo(card2.Value));
 
         int spadeCount = 0, heartCount = 0, clubCount = 0, diamondCount = 0;
@@ -86,7 +93,7 @@ public class SequenceChecker : MonoBehaviour
 
             if (prev)
             {
-                valueDifference = Mathf.Max(valueDifference, card.ValueInt - prev.ValueInt);
+                valueDifference = card.ValueInt - prev.ValueInt;
             }
 
             prev = card;

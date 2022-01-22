@@ -30,6 +30,23 @@ public class CardComparator : IComparer<Card>
     private TrueCallback callback;
 }
 
+
+public struct CardGroup
+{
+    public enum EGroupArea
+    {
+        Low,
+        Mid,
+        High
+    }
+
+    public EGroupArea                   Area;
+    public SequenceChecker.ESequence    Sequence;
+    public Card.EFlag                   HighestFlag;
+    public Card.EValue                  HighestValue;
+    public int                          WinRate;
+}
+
 public class Card : MonoBehaviour
 {
     public enum ESide
