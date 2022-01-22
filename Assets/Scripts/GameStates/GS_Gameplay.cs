@@ -156,6 +156,7 @@ public class GS_Gameplay : GameState
     void UpdateScore()
     {
         int highestScore = 0;
+        int AIIdx = 1;
 
         for (int i = 0; i < GameManager.Instance.PlayerList.Count; i++)
         {
@@ -191,7 +192,15 @@ public class GS_Gameplay : GameState
             }
 
             GUI.PlayersScore.SetActive(true);
-            GUI.PlayersScore.transform.GetChild(i).GetComponent<Text>().text = "Score: " + player.Score;
+
+            if (player.IsMC)
+            {
+                GUI.PlayersScore.transform.GetChild(0).GetComponent<Text>().text = "Score: " + player.Score;
+            }
+            else
+            {
+                GUI.PlayersScore.transform.GetChild(AIIdx++).GetComponent<Text>().text = "Score: " + player.Score;
+            }
         }
     }
 
