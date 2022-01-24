@@ -158,7 +158,7 @@ MonoBehaviour:
   m_gameStateListPrefab:
   - {fileID: 7986293987997325670, guid: 2f89c55775e53d54cb08d2b06e9e63ac, type: 3}
   - {fileID: -1217532136729657985, guid: 83a37c70f38868c4eac1c70900d9e7c9, type: 3}
-  m_gameDifficulty: 0
+  m_gameDifficulty: 1
   m_cardList:
   - {fileID: 5849866499001328336, guid: e211048f130adde42aac004fbb8014b3, type: 3}
   - {fileID: 5117384432529853004, guid: 8dafa0cfc4482344ebae44077b3062f1, type: 3}
